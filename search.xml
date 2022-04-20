@@ -690,4 +690,22 @@
         <tag>virtual</tag>
       </tags>
   </entry>
+  <entry>
+    <title>cas的0到1的过程</title>
+    <url>/2022/04/18/cas%E7%9A%840%E5%88%B01%E7%9A%84%E8%BF%87%E7%A8%8B/</url>
+    <content><![CDATA[<p>CAS是Central Authentication Service的缩写，中央认证服务，一种独立开放指令协议。</p>
+<span id="more"></span>
+
+<ol>
+<li><a href="/cas">准备工作</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>sso</category>
+        <category>cas</category>
+      </categories>
+      <tags>
+        <tag>cas</tag>
+      </tags>
+  </entry>
 </search>
