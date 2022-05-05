@@ -226,8 +226,8 @@
 <h1 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h1><p>三台设备都需要包含SSH客户端，A，B设备需要包含SSH服务端。</p>
 <h1 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h1><h2 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h2><p>在A设备上建立A设备到B设备的反向代理：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -fCNR  &lt;port_b1&gt;:localhost:22 userB@B.B.B.B </span><br></pre></td></tr></table></figure>
-<p>例如：<br>ssh -fCNR  10000:localhost:22 <a href="mailto:&#x75;&#x73;&#x65;&#114;&#66;&#x40;&#66;&#46;&#x42;&#46;&#x42;&#46;&#66;">&#x75;&#x73;&#x65;&#114;&#66;&#x40;&#66;&#46;&#x42;&#46;&#x42;&#46;&#66;</a> </p>
-<p>（此时B设备上已经可以通过ssh -p 10000 userA@localhost连接到设备A）<br><port_b1>：建立在B机器上，用来代理设备A机器22端口的端口。<br> <a href="mailto:&#x75;&#x73;&#x65;&#x72;&#66;&#x40;&#x42;&#x2e;&#66;&#x2e;&#x42;&#x2e;&#x42;">&#x75;&#x73;&#x65;&#x72;&#66;&#x40;&#x42;&#x2e;&#66;&#x2e;&#x42;&#x2e;&#x42;</a> ：B机器的用户名和IP地址</p>
+<p>例如：<br>ssh -fCNR  10000:localhost:22 <a href="mailto:&#117;&#x73;&#x65;&#x72;&#66;&#x40;&#x42;&#x2e;&#x42;&#46;&#x42;&#x2e;&#66;">&#117;&#x73;&#x65;&#x72;&#66;&#x40;&#x42;&#x2e;&#x42;&#46;&#x42;&#x2e;&#66;</a> </p>
+<p>（此时B设备上已经可以通过ssh -p 10000 userA@localhost连接到设备A）<br><port_b1>：建立在B机器上，用来代理设备A机器22端口的端口。<br> <a href="mailto:&#x75;&#115;&#x65;&#114;&#x42;&#64;&#x42;&#46;&#66;&#x2e;&#x42;&#x2e;&#66;">&#x75;&#115;&#x65;&#114;&#x42;&#64;&#x42;&#46;&#66;&#x2e;&#x42;&#x2e;&#66;</a> ：B机器的用户名和IP地址</p>
 <h2 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h2><p>在B设备上建立B设备到A设备的正向代理：(这样做的目的是为了实现和外网的通信)</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -fCNL  *:&lt;port_b2&gt;:localhost:&lt;port_b1&gt;  userB@localhost</span><br></pre></td></tr></table></figure>
 <p>例如：ssh -fCNL  *:10001:localhost:10000 userB@localhost</p>
