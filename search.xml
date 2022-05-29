@@ -805,4 +805,31 @@
 <p>[^code]: 代码高亮功能支持包括 Java, Python, JavaScript 在内的，<strong>四十一</strong>种主流编程语言。</p>
 ]]></content>
   </entry>
+  <entry>
+    <title>hexo手册</title>
+    <url>/2022/05/29/hexo/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>安装、设置、自定义 1123</p>
+<span id="more"></span>
+
+<h1 id="Elegant-and-Powerful-Theme-for-Hexo"><a href="#Elegant-and-Powerful-Theme-for-Hexo" class="headerlink" title="Elegant and Powerful Theme for Hexo"></a>Elegant and Powerful Theme for Hexo</h1><p>Theme NexT has the following features:</p>
+<ul>
+<li>No jQuery.</li>
+<li>Support <a href="https://caniuse.com/prefers-color-scheme">native dark mode</a>.</li>
+<li>Support Pjax to deliver a fast browsing experience.</li>
+<li>Integrated KaTeX and MathJax mathematical formula rendering.</li>
+<li>Integrated PDF.js and mermaid diagram.</li>
+<li>Support Disqus, Changyan, LiveRe, Gitalk, Utterances and Isso comment systems.</li>
+<li>Support a large number of third-party statistics and content sharing services.</li>
+<li>Easy to customize content or modify style.</li>
+</ul>
+<h3 id="Four-Schemes-in-One"><a href="#Four-Schemes-in-One" class="headerlink" title="Four Schemes in One"></a>Four Schemes in One</h3><p>By using different Schemes in NexT, you can simply change the style of your blog, and nearly all options can be used in all schemes.</p>
+<p>1</p>
+]]></content>
+      <categories>
+        <category>config</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
 </search>
