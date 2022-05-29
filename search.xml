@@ -718,9 +718,7 @@
     <url>/2022/05/20/reflection/</url>
     <content><![CDATA[<p>在群中</p>
 <span id="more"></span>
-<p>测试延迟时间<br>还是没有生效</p>
-<p>1111</p>
-<p>2222</p>
+<p>需注意<br>本博客基于 HUGO, 使用的是 reuixiy 开发的 MemE 主题, 但由于该主题暂时不支持 Shortcodes (与\LaTeXL<br>ATE<br>​<br> X 渲染冲突), 所以, 如果你用的也是该主题, 又想玩玩儿 Shortcodes, 那么你需要作出一些小修改, 修改办法见下方链接.</p>
 ]]></content>
   </entry>
 </search>
