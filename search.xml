@@ -1,8 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>reflection</title>
+    <title>数据库的部署文件</title>
     <url>/2022/05/20/index/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>数据库的pv、pvc、svc、deploy的配置文件</p>
+<span id="more"></span>
+<h1 id="pv-yaml"><a href="#pv-yaml" class="headerlink" title="pv.yaml"></a>pv.yaml</h1><pre><code class="yaml">apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-mysql
+  namespace: dev 
+  labels:
+    pv: pv-mysql  
+spec:
+  capacity:
+    storage: 15Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs
+  nfs:
+    server: 192.168.10.100  #这里请写nfs服务器的ip 
+    path: /home/nfs/pv
+</code></pre>
+<h1 id="pvc-yaml"><a href="#pvc-yaml" class="headerlink" title="pvc.yaml"></a>pvc.yaml</h1><pre><code class="yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+  namespace: dev
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: nfs
+  volumeMode: Filesystem
+  volumeName: pv-mysql
+</code></pre>
+]]></content>
   </entry>
 </search>
