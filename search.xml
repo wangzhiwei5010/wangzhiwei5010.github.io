@@ -1,6 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>cas的0到1的过程</title>
+    <url>/2022/04/19/cas%E7%9A%840%E5%88%B01%E7%9A%84%E8%BF%87%E7%A8%8B/</url>
+    <content><![CDATA[<p>CAS是Central Authentication Service的缩写，中央认证服务，一种独立开放指令协议。</p>
+<span id="more"></span>
+
+<ol>
+<li><a href="/cas">准备工作</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>sso</category>
+        <category>cas</category>
+      </categories>
+      <tags>
+        <tag>cas</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>kafka</title>
+    <url>/2021/11/12/kafka/</url>
+    <content><![CDATA[<p>ack模式调整 + 重试机制 + 规避重试机制下带来的问题</p>
+<span id="more"></span>
+<figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attr">spring.kafka:</span></span><br><span class="line">	<span class="attr">producer:</span></span><br><span class="line">      <span class="comment">#这个参数可以是任意字符串，它是broker用来识别消息是来自哪个客户端的。在broker进行打印日志、衡量指标或者配额限制时会用到。</span></span><br><span class="line">      <span class="attr">clientId:</span> <span class="string">${spring.application.name}</span> <span class="comment">#方便kafkaserver打印日志定位请求来源</span></span><br><span class="line">      <span class="attr">bootstrap-servers:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:8080</span> <span class="comment">#kafka服务器地址，多个以逗号隔开</span></span><br><span class="line">      <span class="comment">#acks=0：生产者把消息发送到broker即认为成功，不等待broker的处理结果。这种方式的吞吐最高，但也是最容易丢失消息的。</span></span><br><span class="line">      <span class="comment">#acks=1：生产者会在该分区的leader写入消息并返回成功后，认为消息发送成功。如果群首写入消息失败，生产者会收到错误响应并进行重试。这种方式能够一定程度避免消息丢失，但如果leader宕机时该消息没有复制到其他副本，那么该消息还是会丢失。另外，如果我们使用同步方式来发送，延迟会比前一种方式大大增加（至少增加一个网络往返时间）；如果使用异步方式，应用感知不到延迟，吞吐量则会受异步正在发送中的数量限制。</span></span><br><span class="line">      <span class="comment">#acks=all：生产者会等待所有副本成功写入该消息，这种方式是最安全的，能够保证消息不丢失，但是延迟也是最大的。</span></span><br><span class="line">      <span class="attr">acks:</span> <span class="string">all</span> <span class="comment">#默认值：1</span></span><br><span class="line">      <span class="comment">#当生产者发送消息收到一个可恢复异常时，会进行重试，这个参数指定了重试的次数。在实际情况中，这个参数需要结合retry.backoff.ms来使用，建议总的重试时间比集群重新选举leader的时间长，这样可以避免生产者过早结束重试导致失败。</span></span><br><span class="line">      <span class="comment">#另外需注意，当开启重试时，若未设置max.in.flight.requests.per.connection=1，则可能出现发往同一个分区的两批消息的顺序出错，比如，第一批发送失败了，第二批成功了，然后第一批重试成功了，此时两者的顺序就颠倒了。</span></span><br><span class="line">      <span class="attr">retries:</span> <span class="number">2</span>  <span class="comment">#发送失败时重试多少次，0=禁用重试（默认值）</span></span><br><span class="line">      <span class="attr">properties:</span></span><br><span class="line">      	<span class="attr">retry-backoff-ms:</span> <span class="number">1000</span> <span class="comment">#重试等待间隔</span></span><br><span class="line">      <span class="comment">#默认情况下消息是不压缩的，此参数可指定采用何种算法压缩消息，可取值：none,snappy,gzip,lz4。snappy压缩算法由Google研发，这种算法在性能和压缩比取得比较好的平衡；相比之下，gzip消耗更多的CPU资源，但是压缩效果也是最好的。通过使用压缩，我们可以节省网络带宽和Kafka存储成本。</span></span><br><span class="line">      <span class="attr">compressionType:</span> <span class="string">"none"</span> <span class="comment">#如果不开启压缩，可设置为none（默认值），比较大的消息可开启。</span></span><br><span class="line">      <span class="comment">#当多条消息发送到一个分区时，Producer会进行批量发送，这个参数指定了批量消息大小的上限（以字节为单位）。当批量消息达到这个大小时，Producer会一起发送到broker；但即使没有达到这个大小，生产者也会有定时机制来发送消息，避免消息延迟过大。</span></span><br><span class="line">      <span class="attr">batch-size:</span> <span class="number">16384</span> <span class="comment">#默认16K，值越小延迟越低，但是吞吐量和性能会降低。0=禁用批量发送</span></span><br><span class="line">      <span class="comment">#这个参数设置Producer暂存待发送消息的缓冲区内存的大小，如果应用调用send方法的速度大于Producer发送的速度，那么调用会阻塞一定（max.block.ms）时间后抛出异常。</span></span><br><span class="line">      <span class="attr">buffer-memory:</span> <span class="number">33554432</span> <span class="comment">#缓冲区默认大小32M</span></span><br></pre></td></tr></tbody></table></figure>
+<p>生产者：</p>
+<figure class="highlight java"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="comment">//该类需要为多列类型</span></span><br><span class="line"><span class="meta">@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ProducerFuture</span> <span class="keyword">implements</span> <span class="title class_">FailureCallback</span>, SuccessCallback&lt;SendResult&lt;String, Object&gt;&gt; {</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> LoggerFactory.getLogger(ProducerFuture.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> KafkaTemplate&lt;String, Object&gt; kafkaTemplate;</span><br><span class="line">    <span class="keyword">private</span> String uniqueId;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 异步发送消息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> topicLcs</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> value</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">async</span><span class="params">(String topicLcs, String value)</span> {</span><br><span class="line">        uniqueId = MDC.get(<span class="string">"UNIQUE_ID"</span>);</span><br><span class="line">        logger.info(<span class="string">"send {} data:{}"</span>, topicLcs, value);</span><br><span class="line">        ListenableFuture&lt;SendResult&lt;String, Object&gt;&gt; listenableFuture = kafkaTemplate.send(topicLcs, value);</span><br><span class="line">        listenableFuture.addCallback(<span class="built_in">this</span>, <span class="built_in">this</span>);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onFailure</span><span class="params">(Throwable ex)</span> {</span><br><span class="line">        MDC.put(UNIQUE_ID, uniqueId);</span><br><span class="line">        <span class="comment">//重试策略失败后，将进入该方法。在该重试方法中，可以做其他响应的业务逻辑，如告警、投放其他队列或落地失败的消息内容等</span></span><br><span class="line">        logger.error(<span class="string">"sendFailure:"</span>, ex);</span><br><span class="line">        MDC.remove(UNIQUE_ID);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onSuccess</span><span class="params">(SendResult&lt;String, Object&gt; result)</span> {</span><br><span class="line">        MDC.put(UNIQUE_ID, uniqueId);</span><br><span class="line">        logger.info(<span class="string">"sendSuccess {} "</span>, result.getRecordMetadata().topic() + result.getRecordMetadata().offset());</span><br><span class="line">        MDC.remove(UNIQUE_ID);</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<p><strong>启用重试机制后带来的问题</strong></p>
+<ol>
+<li>重试过程中，一条消息只会向同一个分区进行重试发送，所以在重试的机制下，也能保证消息的全局幂等性</li>
+<li>由于重试，可能导致消息在 Node 中的顺序和 Producer 发送时的顺序不一致。可以对max.in.flight.requests.per.connectio（限制每个连接（指客户端与 Node 之间的 per.connection 连接）最多缓存 已发送但未收到响应的请求数，默认为5）设置为1，即可保证在重试机制下的消息顺序。<br>手动提交 offset + 重试机制 + 死信队列（告警） + 死信队列消息采用其他策略去处理消息</li>
+</ol>
+<figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">#kafka配置，更多配置请参考：KafkaProperties</span></span><br><span class="line"><span class="attr">spring.kafka:</span></span><br><span class="line"><span class="comment">#消费者的配置，可参考：org.apache.kafka.clients.consumer.ConsumerConfig</span></span><br><span class="line">  <span class="attr">consumer:</span></span><br><span class="line">    <span class="comment">#暂不用提供clientId，2.x版本可放出来，1.x有多个topic且concurrency&gt;1会出现JMX注册时异常</span></span><br><span class="line">    <span class="comment">#clientId: ${spring.application.name} #方便kafkaserver打印日志定位请求来源</span></span><br><span class="line">    <span class="comment"># kafka集群</span></span><br><span class="line">    <span class="attr">bootstrap-servers:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:8080</span> <span class="comment">#kafka服务器地址，多个以逗号隔开</span></span><br><span class="line">    <span class="comment">#指定了当消费者第一次读取分区或者无offset时拉取那个位置的消息，可以取值为latest（从最新的消息开始消费）,earliest（从最早的消息开始消费）,none（如果无offset就抛出异常）</span></span><br><span class="line">    <span class="attr">autoOffsetReset:</span> <span class="string">latest</span> <span class="comment">#默认值：latest</span></span><br><span class="line">    <span class="comment">#指定了消费者是否自动提交消费位移，默认为true。如果为true，你可能需要关注自动提交的时间间隔，该间隔由auto.commit.interval.ms设置。</span></span><br><span class="line">    <span class="attr">enable-auto-commit:</span> <span class="literal">false</span></span><br><span class="line">    <span class="comment">#周期性自动提交的间隔，单位毫秒</span></span><br><span class="line">    <span class="attr">auto-commit-interval:</span> <span class="number">2000</span> <span class="comment">#默认值：5000</span></span><br><span class="line">    <span class="comment">#参数允许消费者指定从broker读取消息时最小的Payload的字节数。当消费者从broker读取消息时，如果数据字节数小于这个阈值，broker会等待直到有足够的数据，然后才返回给消费者。对于写入量不高的主题来说，这个参数可以减少broker和消费者的压力，因为减少了往返的时间。而对于有大量消费者的主题来说，则可以明显减轻broker压力。</span></span><br><span class="line">    <span class="attr">fetchMinSize:</span> <span class="number">1</span> <span class="comment">#默认值： 1</span></span><br><span class="line">    <span class="comment">#上面的fetch.min.bytes参数指定了消费者读取的最小数据量，而这个参数则指定了消费者读取时最长等待时间，从而避免长时间阻塞。这个参数默认为500ms。</span></span><br><span class="line">    <span class="attr">fetchMaxWait:</span> <span class="number">500</span> <span class="comment">#默认值：500毫秒</span></span><br><span class="line">    <span class="comment">#这个参数控制一个poll()调用返回的记录数，即consumer每次批量拉多少条数据。</span></span><br><span class="line">    <span class="attr">maxPollRecords:</span> <span class="number">500</span> <span class="comment">#默认值：500</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>config</p>
+<figure class="highlight java"><table><tbody><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Config</span> {</span><br><span class="line">    <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> LoggerFactory.getLogger(Config.class);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String error_topic=<span class="string">"error_topic"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> ConcurrentKafkaListenerContainerFactory <span class="title function_">listenerContainerFactory</span><span class="params">(ConsumerFactory consumerFactory, KafkaTemplate&lt;String,Object&gt; template)</span> {</span><br><span class="line">        <span class="type">ConcurrentKafkaListenerContainerFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConcurrentKafkaListenerContainerFactory</span>();</span><br><span class="line">        factory.setConsumerFactory(consumerFactory);</span><br><span class="line">        <span class="comment">// 最大重试次数5次，每次间隔5s(该配置需要参考 Broker.leader 切换的平均时间去设置)</span></span><br><span class="line">        <span class="type">SeekToCurrentErrorHandler</span> <span class="variable">seekToCurrentErrorHandler</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SeekToCurrentErrorHandler</span>((consumerRecord, e) -&gt; {</span><br><span class="line">            logger.error(<span class="string">"重试机制后异常，consumerRecord：{}"</span>, consumerRecord.toString(), e);</span><br><span class="line">            <span class="comment">//做其他业务操作，如记录异常信息到表，发送信息到其他的队列人工核对处理等</span></span><br><span class="line">            template.send(error_topic,consumerRecord.toString());</span><br><span class="line">        }, <span class="keyword">new</span> <span class="title class_">FixedBackOff</span>(<span class="number">5000</span>, <span class="number">5</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">//       批量获取消息的时候，使用该方式</span></span><br><span class="line"><span class="comment">//        SeekToCurrentBatchErrorHandler batchErrorHandler = new SeekToCurrentBatchErrorHandler();</span></span><br><span class="line"></span><br><span class="line">        factory.setErrorHandler(seekToCurrentErrorHandler);</span><br><span class="line">        <span class="comment">//设置提交偏移量的方式 ,否则出现异常的时候, 会报错No Acknowledgment available as an argument, the listener container must have a MANUAL AckMode to populate the Acknowledgment.</span></span><br><span class="line">        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);</span><br><span class="line">        <span class="keyword">return</span> factory;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>]]></content>
+      <categories>
+        <category>config</category>
+      </categories>
+      <tags>
+        <tag>kafka</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>版本管理软件git</title>
+    <url>/2021/11/14/git/</url>
+    <content><![CDATA[<p>git 的一些常用命令</p>
+<span id="more"></span>
+<h1 id="git-cmd"><a href="#git-cmd" class="headerlink" title="git cmd"></a>git cmd</h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">Untracked files → 文件未被跟踪，即未添加到缓存区</span><br><span class="line">Changes <span class="keyword">to</span> be committed → 文件已经在缓存区，这是下次提交的内容</span><br><span class="line">Changes but <span class="keyword">not</span> updated → 文件被修改，但未添加到缓存区</span><br><span class="line">git <span class="keyword">commit</span> <span class="operator">-</span>m ""  只会提交添加到缓存区的文件（只提交添加的）</span><br><span class="line">git <span class="keyword">commit</span> <span class="operator">-</span>a <span class="operator">-</span>m ""  能提交修改过，但是没有添加到缓存区的文件（修改过的就能提交）</span><br><span class="line">git remote <span class="keyword">add</span> origin git<span class="variable">@codeup</span>.aliyun.com:youpinsanyue<span class="operator">/</span>ypsy<span class="operator">/</span>common<span class="operator">-</span>model.git</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">git push <span class="operator">-</span>u origin master</span><br><span class="line">git push <span class="comment">--set-upstream origin master</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="git-message"><a href="#git-message" class="headerlink" title="git message"></a>git message</h1><p>每次提交，Commit message 都包括三个部分：Header，Body 和 Footer。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="operator">&lt;</span>type<span class="operator">&gt;</span>(<span class="operator">&lt;</span><span class="keyword">scope</span><span class="operator">&gt;</span>): <span class="operator">&lt;</span>subject<span class="operator">&gt;</span></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 空一行</span><br><span class="line"><span class="operator">&lt;</span>body<span class="operator">&gt;</span></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 空一行</span><br><span class="line"><span class="operator">&lt;</span>footer<span class="operator">&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>其中，Header 是必需的，Body 和 Footer 可以省略。</p>
+<p>不管是哪一个部分，任何一行都不得超过72个字符（或100个字符）。这是为了避免自动换行影响美观。</p>
+<h2 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h2><p>Header部分只有一行，包括三个字段：type（必需）、scope（可选）和subject（必需）。</p>
+<h3 id="type"><a href="#type" class="headerlink" title="type"></a>type</h3><p>type用于说明 commit 的类别，只允许使用下面7个标识。</p>
+<ul>
+<li>7个标识说明<ul>
+<li>feat：新功能（feature）</li>
+<li>fix：修补bug</li>
+<li>docs：文档（documentation）</li>
+<li>style： 格式（不影响代码运行的变动）</li>
+<li>refactor：重构（即不是新增功能，也不是修改bug的代码变动）</li>
+<li>test：增加测试</li>
+<li>chore：构建过程或辅助工具的变动</li>
+<li>revert: 用于撤销以前的 commit 详见后面特殊情况注释</li>
+</ul>
+</li>
+</ul>
+<p>如果type为feat和fix，则该 commit 将肯定出现在 Change log 之中。其他情况（docs、chore、style、refactor、test）由你决定，要不要放入 Change log，建议是不要。</p>
+<h3 id="scope"><a href="#scope" class="headerlink" title="scope"></a>scope</h3><p>scope用于说明 commit 影响的范围，比如数据层、控制层、视图层等等，视项目不同而不同。</p>
+<h3 id="subject"><a href="#subject" class="headerlink" title="subject"></a>subject</h3><p>subject是 commit 目的的简短描述，不超过50个字符。</p>
+<ul>
+<li>描述规范<ul>
+<li>以动词开头，使用第一人称现在时，比如<code>change</code>，而不是<code>changed</code>或<code>changes</code></li>
+<li>第一个字母小写</li>
+<li>结尾不加句号（<code>.</code>）</li>
+</ul>
+</li>
+</ul>
+<h2 id="Body"><a href="#Body" class="headerlink" title="Body"></a>Body</h2><p>Body 部分是对本次 commit 的详细描述，可以分成多行。下面是一个范例</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">More detailed explanatory text, <span class="keyword">if</span> necessary.  Wrap it to </span><br><span class="line">about 72 characters or so. </span><br><span class="line"></span><br><span class="line">Further paragraphs come after blank lines.</span><br><span class="line"></span><br><span class="line">- Bullet points are okay, too</span><br><span class="line">- Use a hanging indent</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><p>有两个注意点</p>
+<p>  （1）使用第一人称现在时，比如使用<code>change</code>而不是<code>changed</code>或<code>changes</code>。</p>
+<p>  （2）应该说明代码变动的动机，以及与以前行为的对比。</p>
+</li>
+</ul>
+<h2 id="Footer"><a href="#Footer" class="headerlink" title="Footer"></a>Footer</h2><p>Footer 部分只用于两种情况。</p>
+<h3 id="不兼容变动"><a href="#不兼容变动" class="headerlink" title="不兼容变动"></a>不兼容变动</h3><p>如果当前代码与上一个版本不兼容，则 Footer 部分以BREAKING CHANGE开头，后面是对变动的描述、以及变动理由和迁移方法</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">BREAKING CHANGE: isolate scope bindings definition has changed.</span><br><span class="line"></span><br><span class="line">    To migrate the code follow the example below:</span><br><span class="line"></span><br><span class="line">    Before:</span><br><span class="line"></span><br><span class="line">    scope: {</span><br><span class="line">      myAttr: <span class="string">'attribute'</span>,</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    After:</span><br><span class="line"></span><br><span class="line">    scope: {</span><br><span class="line">      myAttr: <span class="string">'@'</span>,</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    The removed `inject` wasn<span class="string">'t generaly useful for directives so there should be no code using it.</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="关闭-Issue"><a href="#关闭-Issue" class="headerlink" title="关闭 Issue"></a>关闭 Issue</h3><p>如果当前 commit 针对某个issue，那么可以在 Footer 部分关闭这个 issue 。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">Closes <span class="comment">#234</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>也可以一次关闭多个 issue 。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">Closes <span class="comment">#123, #245, #992</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Revert"><a href="#Revert" class="headerlink" title="Revert"></a>Revert</h2><p>还有一种特殊情况，如果当前 commit 用于撤销以前的 commit，则必须以revert:开头，后面跟着被撤销 Commit 的 Header。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">revert: feat(pencil): add <span class="string">'graphiteWidth'</span> option</span><br><span class="line"></span><br><span class="line">This reverts commit 667ecc1654a317a13331b17617d973392f415f02.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Body部分的格式是固定的，必须写成<code>This reverts commit &amp;lt;hash&gt;.</code>，其中的<code>hash</code>是被撤销 commit 的 SHA 标识符。</p>
+<p>如果当前 commit 与被撤销的 commit，在同一个发布（release）里面，那么它们都不会出现在 Change log 里面。如果两者在不同的发布，那么当前 commit，会出现在 Change log 的<code>Reverts</code>小标题下面。</p>
+<h1 id="生成-Change-log"><a href="#生成-Change-log" class="headerlink" title="生成 Change log"></a>生成 Change log</h1><p>如果你的所有 Commit 都符合 Angular 格式，那么发布新版本时， Change log 就可以用脚本自动生成（<a href="https://github.com/ajoslin/conventional-changelog/blob/master/CHANGELOG.md">例1</a>，<a href="https://github.com/karma-runner/karma/blob/master/CHANGELOG.md">例2</a>，<a href="https://github.com/btford/grunt-conventional-changelog/blob/master/CHANGELOG.md">例3</a>）。</p>
+<p>生成的文档包括以下三个部分。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">New features</span><br><span class="line">Bug fixes</span><br><span class="line">Breaking changes.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>每个部分都会罗列相关的 commit ，并且有指向这些 commit 的链接。当然，生成的文档允许手动修改，所以发布前，你还可以添加其他内容。</p>
+<h1 id="commit-template"><a href="#commit-template" class="headerlink" title="commit template"></a>commit template</h1><p>格式基本规约：50/72格式化</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># head: &lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;</span></span><br><span class="line"><span class="comment"># - type: feat, fix, docs, style, refactor, test, chore</span></span><br><span class="line"><span class="comment"># - scope: can be empty (eg. if the change is a global or difficult to assign to a single component)</span></span><br><span class="line"><span class="comment"># - subject: start with verb (such as 'change'), 50-character line#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># body: 72-character wrapped. This should answer:</span></span><br><span class="line"><span class="comment"># * Why was this change necessary?</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># * How does it address the problem?</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># * Are there any side effects?#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># footer: </span></span><br><span class="line"><span class="comment"># - Include a link to the ticket, if any.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># - BREAKING CHANGE</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Commitizen</span></span><br></pre></td></tr></tbody></table></figure>]]></content>
+      <categories>
+        <category>中间件</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+        <tag>version</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>轻型目录访问协议</title>
+    <url>/2021/11/14/ldap/</url>
+    <content><![CDATA[<p>部署自己的ldap服务,实现统一登录管理</p>
+<span id="more"></span>
+<figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">run</span> <span class="string">-p</span> <span class="number">389</span><span class="string">:389</span> <span class="string">--name</span> <span class="string">myopenldap</span> <span class="string">--network</span> <span class="string">bridge</span> <span class="string">--hostname</span> <span class="string">openldap-host</span> <span class="string">--env</span> <span class="string">LDAP_ORGANISATION="mylitboy"</span> <span class="string">--env</span> <span class="string">LDAP_DOMAIN="mylitboy.com"</span> <span class="string">--env</span> <span class="string">LDAP_ADMIN_PASSWORD="ldap123"</span> <span class="string">--detach</span> <span class="string">osixia/openldap</span></span><br><span class="line"></span><br><span class="line"><span class="string">docker</span> <span class="string">run</span> <span class="string">-d</span> <span class="string">--privileged</span> <span class="string">-p</span> <span class="number">10004</span><span class="string">:80</span> <span class="string">--name</span> <span class="string">myphpldapadmin</span> <span class="string">--env</span> <span class="string">PHPLDAPADMIN_HTTPS=false</span> <span class="string">--env</span> <span class="string">PHPLDAPADMIN_LDAP_HOSTS=172.17.0.3</span> <span class="string">--detach</span> <span class="string">osixia/phpldapadmin</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>1、登录<br>在运行成功后访问运行成功的phpldapadmin，地址为：192.168.106.150:8080，如图所示</p>
+<p>点击登录，用户名为cn=admin,dc=mylitboy,dc=com 密码：ldap123</p>
+<p>2、在界面新建组与用户</p>
+<p>先创建一个组织单元比如创建一个产品部：</p>
+<p>然后在该部门中创建组，或者不在细分的话也可直接创建用户。为了演示我就都先创建组然后创建用户。<br>同样点击刚创建好的product部的条目，点击create a child entry，选择Posix Group，创建一个开发组。</p>
+<p>在新建的组下添加用户，选中developmnt条目，创建子条目，选择User Account或Account，推荐使用User Account，因为User Account中包含了Account，还增加了更多的属性。</p>
+<p>填写完之后提交，创建成功</p>
+<p>此时该用户的dn为cn=zhang san,cn=development,ou=product,dc=example,dc=com，如果想使用uid来识别用户可以在界面中rename修改用户的dn。</p>
+<p>3、在ldap中使用memberOf属性<br>在一些组件的继承中需要用到memberOf属性去同步用户的一些角色信息，但是posixGroup组并没有提供这个属性，所以我们需要新建一个拥有groupOfUniqueNames的用户组条目。<br>我们在product部门条目下创建一个拥有groupOfUniqueNames的用户组条目，第一步先选择创建子条目，第二部选择默认模板。</p>
+<p>选择groupOfUniqueNames，点击下一步</p>
+<p>rdn选择ou或者cn都可以（rdn：一般指dn逗号最左边的部分，如cn=zhang san,cn=development,ou=product,dc=example,dc=com中rdn为cn=zhang san。它与RootDN不同，RootDN通常与RootPW同时出现，特指管理LDAP中信息的最高权限用户。）<br>然后选择此组内包含的成员，点击这个搜索按钮，选择对应的人员，我们选择uid=zsan的用户。</p>
+<p>注意填写改组的ou属性。</p>
+<p>然后点击创建。<br>点进admin的组中 我们就可以看到已经添加成功的uid=zsan的用户。</p>
+<p>我们也可进入容器去进行验证。<br>进入容器</p>
+<p>docker exec -it 容器id /bash/bin<br>1<br>使用命令：</p>
+<p>ldapsearch -LL  -H ldapi:/// -D “cn=admin,dc=xxx,dc=xxx” -W “(uid=所要搜索的uid)” -b dc=xxx,dc=xxx memberOf<br>1<br>效果如下</p>
+<p>如果未出现红框中结果，则未配置成功。<br>注意：当前docker安装的最新版的openLDAP默认开启了memberOf属性，如果是其他方式安装的openLDAP可以参考<a href="https://wandouduoduo.github.io/articles/53f92c3c.html">https://wandouduoduo.github.io/articles/53f92c3c.html</a></p>
+<p>4、在界面使用LDIF 文件进行组与用户的创建。</p>
+<p>在界面选择import，可直接输入LDIF文件内容，也可导入对应的LDIF文件，如创建一个product部门下的deploy组。</p>
+<p>创建成功</p>
+<p>在deploy组下创建一个uid=lisi的人员</p>
+<p>创建成功</p>
+<p>LDIF文件可以从相似的条目中导出，然后稍作修改后进行创建。如图</p>
+]]></content>
+      <categories>
+        <category>中间件</category>
+      </categories>
+      <tags>
+        <tag>ldap</tag>
+        <tag>php</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>过去一年的总结</title>
+    <url>/2021/11/12/look-back/</url>
+    <content><![CDATA[<p>人就怕咸鱼,还是动一动的好!一点一点来</p>
+<span id="more"></span>
+
+<p>2024年计划</p>
+<ul>
+<li><input disabled="" type="checkbox"> 咸鱼之王网页脚本开发</li>
+<li><input checked="" disabled="" type="checkbox"> 差旅系统维护</li>
+<li><input checked="" disabled="" type="checkbox"> 冻品系统开发</li>
+<li><input checked="" disabled="" type="checkbox"> 赣旅投项目开发</li>
+<li><input disabled="" type="checkbox"> 基础服务维护</li>
+</ul>
+<p>2025年计划</p>
+<ul>
+<li><input disabled="" type="checkbox"> 咸鱼之王网页脚本开发</li>
+<li><input disabled="" type="checkbox"> 差旅系统维护</li>
+<li><input disabled="" type="checkbox"> 冻品系统维护</li>
+<li><input disabled="" type="checkbox"> 赣旅投项目维护</li>
+<li><input disabled="" type="checkbox"> 基础服务维护</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
     <title>虚拟机VirtualBox的小结</title>
     <url>/2021/11/15/VirtualBox/</url>
     <content><![CDATA[<p>virtual box的一些常用命令</p>
@@ -133,151 +317,6 @@
       </tags>
   </entry>
   <entry>
-    <title>cas的0到1的过程</title>
-    <url>/2022/04/19/cas%E7%9A%840%E5%88%B01%E7%9A%84%E8%BF%87%E7%A8%8B/</url>
-    <content><![CDATA[<p>CAS是Central Authentication Service的缩写，中央认证服务，一种独立开放指令协议。</p>
-<span id="more"></span>
-
-<ol>
-<li><a href="/cas">准备工作</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>sso</category>
-        <category>cas</category>
-      </categories>
-      <tags>
-        <tag>cas</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>版本管理软件git</title>
-    <url>/2021/11/14/git/</url>
-    <content><![CDATA[<p>git 的一些常用命令</p>
-<span id="more"></span>
-<h1 id="git-cmd"><a href="#git-cmd" class="headerlink" title="git cmd"></a>git cmd</h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">Untracked files → 文件未被跟踪，即未添加到缓存区</span><br><span class="line">Changes <span class="keyword">to</span> be committed → 文件已经在缓存区，这是下次提交的内容</span><br><span class="line">Changes but <span class="keyword">not</span> updated → 文件被修改，但未添加到缓存区</span><br><span class="line">git <span class="keyword">commit</span> <span class="operator">-</span>m ""  只会提交添加到缓存区的文件（只提交添加的）</span><br><span class="line">git <span class="keyword">commit</span> <span class="operator">-</span>a <span class="operator">-</span>m ""  能提交修改过，但是没有添加到缓存区的文件（修改过的就能提交）</span><br><span class="line">git remote <span class="keyword">add</span> origin git<span class="variable">@codeup</span>.aliyun.com:youpinsanyue<span class="operator">/</span>ypsy<span class="operator">/</span>common<span class="operator">-</span>model.git</span><br></pre></td></tr></tbody></table></figure>
-
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">git push <span class="operator">-</span>u origin master</span><br><span class="line">git push <span class="comment">--set-upstream origin master</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h1 id="git-message"><a href="#git-message" class="headerlink" title="git message"></a>git message</h1><p>每次提交，Commit message 都包括三个部分：Header，Body 和 Footer。</p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="operator">&lt;</span>type<span class="operator">&gt;</span>(<span class="operator">&lt;</span><span class="keyword">scope</span><span class="operator">&gt;</span>): <span class="operator">&lt;</span>subject<span class="operator">&gt;</span></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 空一行</span><br><span class="line"><span class="operator">&lt;</span>body<span class="operator">&gt;</span></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 空一行</span><br><span class="line"><span class="operator">&lt;</span>footer<span class="operator">&gt;</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>其中，Header 是必需的，Body 和 Footer 可以省略。</p>
-<p>不管是哪一个部分，任何一行都不得超过72个字符（或100个字符）。这是为了避免自动换行影响美观。</p>
-<h2 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h2><p>Header部分只有一行，包括三个字段：type（必需）、scope（可选）和subject（必需）。</p>
-<h3 id="type"><a href="#type" class="headerlink" title="type"></a>type</h3><p>type用于说明 commit 的类别，只允许使用下面7个标识。</p>
-<ul>
-<li>7个标识说明<ul>
-<li>feat：新功能（feature）</li>
-<li>fix：修补bug</li>
-<li>docs：文档（documentation）</li>
-<li>style： 格式（不影响代码运行的变动）</li>
-<li>refactor：重构（即不是新增功能，也不是修改bug的代码变动）</li>
-<li>test：增加测试</li>
-<li>chore：构建过程或辅助工具的变动</li>
-<li>revert: 用于撤销以前的 commit 详见后面特殊情况注释</li>
-</ul>
-</li>
-</ul>
-<p>如果type为feat和fix，则该 commit 将肯定出现在 Change log 之中。其他情况（docs、chore、style、refactor、test）由你决定，要不要放入 Change log，建议是不要。</p>
-<h3 id="scope"><a href="#scope" class="headerlink" title="scope"></a>scope</h3><p>scope用于说明 commit 影响的范围，比如数据层、控制层、视图层等等，视项目不同而不同。</p>
-<h3 id="subject"><a href="#subject" class="headerlink" title="subject"></a>subject</h3><p>subject是 commit 目的的简短描述，不超过50个字符。</p>
-<ul>
-<li>描述规范<ul>
-<li>以动词开头，使用第一人称现在时，比如<code>change</code>，而不是<code>changed</code>或<code>changes</code></li>
-<li>第一个字母小写</li>
-<li>结尾不加句号（<code>.</code>）</li>
-</ul>
-</li>
-</ul>
-<h2 id="Body"><a href="#Body" class="headerlink" title="Body"></a>Body</h2><p>Body 部分是对本次 commit 的详细描述，可以分成多行。下面是一个范例</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">More detailed explanatory text, <span class="keyword">if</span> necessary.  Wrap it to </span><br><span class="line">about 72 characters or so. </span><br><span class="line"></span><br><span class="line">Further paragraphs come after blank lines.</span><br><span class="line"></span><br><span class="line">- Bullet points are okay, too</span><br><span class="line">- Use a hanging indent</span><br></pre></td></tr></tbody></table></figure>
-
-<ul>
-<li><p>有两个注意点</p>
-<p>  （1）使用第一人称现在时，比如使用<code>change</code>而不是<code>changed</code>或<code>changes</code>。</p>
-<p>  （2）应该说明代码变动的动机，以及与以前行为的对比。</p>
-</li>
-</ul>
-<h2 id="Footer"><a href="#Footer" class="headerlink" title="Footer"></a>Footer</h2><p>Footer 部分只用于两种情况。</p>
-<h3 id="不兼容变动"><a href="#不兼容变动" class="headerlink" title="不兼容变动"></a>不兼容变动</h3><p>如果当前代码与上一个版本不兼容，则 Footer 部分以BREAKING CHANGE开头，后面是对变动的描述、以及变动理由和迁移方法</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">BREAKING CHANGE: isolate scope bindings definition has changed.</span><br><span class="line"></span><br><span class="line">    To migrate the code follow the example below:</span><br><span class="line"></span><br><span class="line">    Before:</span><br><span class="line"></span><br><span class="line">    scope: {</span><br><span class="line">      myAttr: <span class="string">'attribute'</span>,</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    After:</span><br><span class="line"></span><br><span class="line">    scope: {</span><br><span class="line">      myAttr: <span class="string">'@'</span>,</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    The removed `inject` wasn<span class="string">'t generaly useful for directives so there should be no code using it.</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="关闭-Issue"><a href="#关闭-Issue" class="headerlink" title="关闭 Issue"></a>关闭 Issue</h3><p>如果当前 commit 针对某个issue，那么可以在 Footer 部分关闭这个 issue 。</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">Closes <span class="comment">#234</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>也可以一次关闭多个 issue 。</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">Closes <span class="comment">#123, #245, #992</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="Revert"><a href="#Revert" class="headerlink" title="Revert"></a>Revert</h2><p>还有一种特殊情况，如果当前 commit 用于撤销以前的 commit，则必须以revert:开头，后面跟着被撤销 Commit 的 Header。</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">revert: feat(pencil): add <span class="string">'graphiteWidth'</span> option</span><br><span class="line"></span><br><span class="line">This reverts commit 667ecc1654a317a13331b17617d973392f415f02.</span><br></pre></td></tr></tbody></table></figure>
-
-<p>Body部分的格式是固定的，必须写成<code>This reverts commit &amp;lt;hash&gt;.</code>，其中的<code>hash</code>是被撤销 commit 的 SHA 标识符。</p>
-<p>如果当前 commit 与被撤销的 commit，在同一个发布（release）里面，那么它们都不会出现在 Change log 里面。如果两者在不同的发布，那么当前 commit，会出现在 Change log 的<code>Reverts</code>小标题下面。</p>
-<h1 id="生成-Change-log"><a href="#生成-Change-log" class="headerlink" title="生成 Change log"></a>生成 Change log</h1><p>如果你的所有 Commit 都符合 Angular 格式，那么发布新版本时， Change log 就可以用脚本自动生成（<a href="https://github.com/ajoslin/conventional-changelog/blob/master/CHANGELOG.md">例1</a>，<a href="https://github.com/karma-runner/karma/blob/master/CHANGELOG.md">例2</a>，<a href="https://github.com/btford/grunt-conventional-changelog/blob/master/CHANGELOG.md">例3</a>）。</p>
-<p>生成的文档包括以下三个部分。</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">New features</span><br><span class="line">Bug fixes</span><br><span class="line">Breaking changes.</span><br></pre></td></tr></tbody></table></figure>
-
-<p>每个部分都会罗列相关的 commit ，并且有指向这些 commit 的链接。当然，生成的文档允许手动修改，所以发布前，你还可以添加其他内容。</p>
-<h1 id="commit-template"><a href="#commit-template" class="headerlink" title="commit template"></a>commit template</h1><p>格式基本规约：50/72格式化</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># head: &lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;</span></span><br><span class="line"><span class="comment"># - type: feat, fix, docs, style, refactor, test, chore</span></span><br><span class="line"><span class="comment"># - scope: can be empty (eg. if the change is a global or difficult to assign to a single component)</span></span><br><span class="line"><span class="comment"># - subject: start with verb (such as 'change'), 50-character line#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># body: 72-character wrapped. This should answer:</span></span><br><span class="line"><span class="comment"># * Why was this change necessary?</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># * How does it address the problem?</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># * Are there any side effects?#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># footer: </span></span><br><span class="line"><span class="comment"># - Include a link to the ticket, if any.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># - BREAKING CHANGE</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Commitizen</span></span><br></pre></td></tr></tbody></table></figure>]]></content>
-      <categories>
-        <category>中间件</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-        <tag>version</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>过去一年的总结</title>
-    <url>/2021/11/12/look-back/</url>
-    <content><![CDATA[<p>人就怕咸鱼,还是动一动的好!一点一点来</p>
-<span id="more"></span>
-
-<p>…待完善</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>轻型目录访问协议</title>
-    <url>/2021/11/14/ldap/</url>
-    <content><![CDATA[<p>部署自己的ldap服务,实现统一登录管理</p>
-<span id="more"></span>
-<figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">run</span> <span class="string">-p</span> <span class="number">389</span><span class="string">:389</span> <span class="string">--name</span> <span class="string">myopenldap</span> <span class="string">--network</span> <span class="string">bridge</span> <span class="string">--hostname</span> <span class="string">openldap-host</span> <span class="string">--env</span> <span class="string">LDAP_ORGANISATION="mylitboy"</span> <span class="string">--env</span> <span class="string">LDAP_DOMAIN="mylitboy.com"</span> <span class="string">--env</span> <span class="string">LDAP_ADMIN_PASSWORD="ldap123"</span> <span class="string">--detach</span> <span class="string">osixia/openldap</span></span><br><span class="line"></span><br><span class="line"><span class="string">docker</span> <span class="string">run</span> <span class="string">-d</span> <span class="string">--privileged</span> <span class="string">-p</span> <span class="number">10004</span><span class="string">:80</span> <span class="string">--name</span> <span class="string">myphpldapadmin</span> <span class="string">--env</span> <span class="string">PHPLDAPADMIN_HTTPS=false</span> <span class="string">--env</span> <span class="string">PHPLDAPADMIN_LDAP_HOSTS=172.17.0.3</span> <span class="string">--detach</span> <span class="string">osixia/phpldapadmin</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>1、登录<br>在运行成功后访问运行成功的phpldapadmin，地址为：192.168.106.150:8080，如图所示</p>
-<p>点击登录，用户名为cn=admin,dc=mylitboy,dc=com 密码：ldap123</p>
-<p>2、在界面新建组与用户</p>
-<p>先创建一个组织单元比如创建一个产品部：</p>
-<p>然后在该部门中创建组，或者不在细分的话也可直接创建用户。为了演示我就都先创建组然后创建用户。<br>同样点击刚创建好的product部的条目，点击create a child entry，选择Posix Group，创建一个开发组。</p>
-<p>在新建的组下添加用户，选中developmnt条目，创建子条目，选择User Account或Account，推荐使用User Account，因为User Account中包含了Account，还增加了更多的属性。</p>
-<p>填写完之后提交，创建成功</p>
-<p>此时该用户的dn为cn=zhang san,cn=development,ou=product,dc=example,dc=com，如果想使用uid来识别用户可以在界面中rename修改用户的dn。</p>
-<p>3、在ldap中使用memberOf属性<br>在一些组件的继承中需要用到memberOf属性去同步用户的一些角色信息，但是posixGroup组并没有提供这个属性，所以我们需要新建一个拥有groupOfUniqueNames的用户组条目。<br>我们在product部门条目下创建一个拥有groupOfUniqueNames的用户组条目，第一步先选择创建子条目，第二部选择默认模板。</p>
-<p>选择groupOfUniqueNames，点击下一步</p>
-<p>rdn选择ou或者cn都可以（rdn：一般指dn逗号最左边的部分，如cn=zhang san,cn=development,ou=product,dc=example,dc=com中rdn为cn=zhang san。它与RootDN不同，RootDN通常与RootPW同时出现，特指管理LDAP中信息的最高权限用户。）<br>然后选择此组内包含的成员，点击这个搜索按钮，选择对应的人员，我们选择uid=zsan的用户。</p>
-<p>注意填写改组的ou属性。</p>
-<p>然后点击创建。<br>点进admin的组中 我们就可以看到已经添加成功的uid=zsan的用户。</p>
-<p>我们也可进入容器去进行验证。<br>进入容器</p>
-<p>docker exec -it 容器id /bash/bin<br>1<br>使用命令：</p>
-<p>ldapsearch -LL  -H ldapi:/// -D “cn=admin,dc=xxx,dc=xxx” -W “(uid=所要搜索的uid)” -b dc=xxx,dc=xxx memberOf<br>1<br>效果如下</p>
-<p>如果未出现红框中结果，则未配置成功。<br>注意：当前docker安装的最新版的openLDAP默认开启了memberOf属性，如果是其他方式安装的openLDAP可以参考<a href="https://wandouduoduo.github.io/articles/53f92c3c.html">https://wandouduoduo.github.io/articles/53f92c3c.html</a></p>
-<p>4、在界面使用LDIF 文件进行组与用户的创建。</p>
-<p>在界面选择import，可直接输入LDIF文件内容，也可导入对应的LDIF文件，如创建一个product部门下的deploy组。</p>
-<p>创建成功</p>
-<p>在deploy组下创建一个uid=lisi的人员</p>
-<p>创建成功</p>
-<p>LDIF文件可以从相似的条目中导出，然后稍作修改后进行创建。如图</p>
-]]></content>
-      <categories>
-        <category>中间件</category>
-      </categories>
-      <tags>
-        <tag>ldap</tag>
-        <tag>php</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>随机生成端口</title>
     <url>/2021/11/12/random-port/</url>
     <content><![CDATA[<p>随机生成端口,搬砖</p>
@@ -288,30 +327,6 @@
       </categories>
       <tags>
         <tag>shell</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>kafka</title>
-    <url>/2021/11/12/kafka/</url>
-    <content><![CDATA[<p>ack模式调整 + 重试机制 + 规避重试机制下带来的问题</p>
-<span id="more"></span>
-<figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attr">spring.kafka:</span></span><br><span class="line">	<span class="attr">producer:</span></span><br><span class="line">      <span class="comment">#这个参数可以是任意字符串，它是broker用来识别消息是来自哪个客户端的。在broker进行打印日志、衡量指标或者配额限制时会用到。</span></span><br><span class="line">      <span class="attr">clientId:</span> <span class="string">${spring.application.name}</span> <span class="comment">#方便kafkaserver打印日志定位请求来源</span></span><br><span class="line">      <span class="attr">bootstrap-servers:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:8080</span> <span class="comment">#kafka服务器地址，多个以逗号隔开</span></span><br><span class="line">      <span class="comment">#acks=0：生产者把消息发送到broker即认为成功，不等待broker的处理结果。这种方式的吞吐最高，但也是最容易丢失消息的。</span></span><br><span class="line">      <span class="comment">#acks=1：生产者会在该分区的leader写入消息并返回成功后，认为消息发送成功。如果群首写入消息失败，生产者会收到错误响应并进行重试。这种方式能够一定程度避免消息丢失，但如果leader宕机时该消息没有复制到其他副本，那么该消息还是会丢失。另外，如果我们使用同步方式来发送，延迟会比前一种方式大大增加（至少增加一个网络往返时间）；如果使用异步方式，应用感知不到延迟，吞吐量则会受异步正在发送中的数量限制。</span></span><br><span class="line">      <span class="comment">#acks=all：生产者会等待所有副本成功写入该消息，这种方式是最安全的，能够保证消息不丢失，但是延迟也是最大的。</span></span><br><span class="line">      <span class="attr">acks:</span> <span class="string">all</span> <span class="comment">#默认值：1</span></span><br><span class="line">      <span class="comment">#当生产者发送消息收到一个可恢复异常时，会进行重试，这个参数指定了重试的次数。在实际情况中，这个参数需要结合retry.backoff.ms来使用，建议总的重试时间比集群重新选举leader的时间长，这样可以避免生产者过早结束重试导致失败。</span></span><br><span class="line">      <span class="comment">#另外需注意，当开启重试时，若未设置max.in.flight.requests.per.connection=1，则可能出现发往同一个分区的两批消息的顺序出错，比如，第一批发送失败了，第二批成功了，然后第一批重试成功了，此时两者的顺序就颠倒了。</span></span><br><span class="line">      <span class="attr">retries:</span> <span class="number">2</span>  <span class="comment">#发送失败时重试多少次，0=禁用重试（默认值）</span></span><br><span class="line">      <span class="attr">properties:</span></span><br><span class="line">      	<span class="attr">retry-backoff-ms:</span> <span class="number">1000</span> <span class="comment">#重试等待间隔</span></span><br><span class="line">      <span class="comment">#默认情况下消息是不压缩的，此参数可指定采用何种算法压缩消息，可取值：none,snappy,gzip,lz4。snappy压缩算法由Google研发，这种算法在性能和压缩比取得比较好的平衡；相比之下，gzip消耗更多的CPU资源，但是压缩效果也是最好的。通过使用压缩，我们可以节省网络带宽和Kafka存储成本。</span></span><br><span class="line">      <span class="attr">compressionType:</span> <span class="string">"none"</span> <span class="comment">#如果不开启压缩，可设置为none（默认值），比较大的消息可开启。</span></span><br><span class="line">      <span class="comment">#当多条消息发送到一个分区时，Producer会进行批量发送，这个参数指定了批量消息大小的上限（以字节为单位）。当批量消息达到这个大小时，Producer会一起发送到broker；但即使没有达到这个大小，生产者也会有定时机制来发送消息，避免消息延迟过大。</span></span><br><span class="line">      <span class="attr">batch-size:</span> <span class="number">16384</span> <span class="comment">#默认16K，值越小延迟越低，但是吞吐量和性能会降低。0=禁用批量发送</span></span><br><span class="line">      <span class="comment">#这个参数设置Producer暂存待发送消息的缓冲区内存的大小，如果应用调用send方法的速度大于Producer发送的速度，那么调用会阻塞一定（max.block.ms）时间后抛出异常。</span></span><br><span class="line">      <span class="attr">buffer-memory:</span> <span class="number">33554432</span> <span class="comment">#缓冲区默认大小32M</span></span><br></pre></td></tr></tbody></table></figure>
-<p>生产者：</p>
-<figure class="highlight java"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="comment">//该类需要为多列类型</span></span><br><span class="line"><span class="meta">@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ProducerFuture</span> <span class="keyword">implements</span> <span class="title class_">FailureCallback</span>, SuccessCallback&lt;SendResult&lt;String, Object&gt;&gt; {</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> LoggerFactory.getLogger(ProducerFuture.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> KafkaTemplate&lt;String, Object&gt; kafkaTemplate;</span><br><span class="line">    <span class="keyword">private</span> String uniqueId;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 异步发送消息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> topicLcs</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> value</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">async</span><span class="params">(String topicLcs, String value)</span> {</span><br><span class="line">        uniqueId = MDC.get(<span class="string">"UNIQUE_ID"</span>);</span><br><span class="line">        logger.info(<span class="string">"send {} data:{}"</span>, topicLcs, value);</span><br><span class="line">        ListenableFuture&lt;SendResult&lt;String, Object&gt;&gt; listenableFuture = kafkaTemplate.send(topicLcs, value);</span><br><span class="line">        listenableFuture.addCallback(<span class="built_in">this</span>, <span class="built_in">this</span>);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onFailure</span><span class="params">(Throwable ex)</span> {</span><br><span class="line">        MDC.put(UNIQUE_ID, uniqueId);</span><br><span class="line">        <span class="comment">//重试策略失败后，将进入该方法。在该重试方法中，可以做其他响应的业务逻辑，如告警、投放其他队列或落地失败的消息内容等</span></span><br><span class="line">        logger.error(<span class="string">"sendFailure:"</span>, ex);</span><br><span class="line">        MDC.remove(UNIQUE_ID);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onSuccess</span><span class="params">(SendResult&lt;String, Object&gt; result)</span> {</span><br><span class="line">        MDC.put(UNIQUE_ID, uniqueId);</span><br><span class="line">        logger.info(<span class="string">"sendSuccess {} "</span>, result.getRecordMetadata().topic() + result.getRecordMetadata().offset());</span><br><span class="line">        MDC.remove(UNIQUE_ID);</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
-<p><strong>启用重试机制后带来的问题</strong></p>
-<ol>
-<li>重试过程中，一条消息只会向同一个分区进行重试发送，所以在重试的机制下，也能保证消息的全局幂等性</li>
-<li>由于重试，可能导致消息在 Node 中的顺序和 Producer 发送时的顺序不一致。可以对max.in.flight.requests.per.connectio（限制每个连接（指客户端与 Node 之间的 per.connection 连接）最多缓存 已发送但未收到响应的请求数，默认为5）设置为1，即可保证在重试机制下的消息顺序。<br>手动提交 offset + 重试机制 + 死信队列（告警） + 死信队列消息采用其他策略去处理消息</li>
-</ol>
-<figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">#kafka配置，更多配置请参考：KafkaProperties</span></span><br><span class="line"><span class="attr">spring.kafka:</span></span><br><span class="line"><span class="comment">#消费者的配置，可参考：org.apache.kafka.clients.consumer.ConsumerConfig</span></span><br><span class="line">  <span class="attr">consumer:</span></span><br><span class="line">    <span class="comment">#暂不用提供clientId，2.x版本可放出来，1.x有多个topic且concurrency&gt;1会出现JMX注册时异常</span></span><br><span class="line">    <span class="comment">#clientId: ${spring.application.name} #方便kafkaserver打印日志定位请求来源</span></span><br><span class="line">    <span class="comment"># kafka集群</span></span><br><span class="line">    <span class="attr">bootstrap-servers:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:8080</span> <span class="comment">#kafka服务器地址，多个以逗号隔开</span></span><br><span class="line">    <span class="comment">#指定了当消费者第一次读取分区或者无offset时拉取那个位置的消息，可以取值为latest（从最新的消息开始消费）,earliest（从最早的消息开始消费）,none（如果无offset就抛出异常）</span></span><br><span class="line">    <span class="attr">autoOffsetReset:</span> <span class="string">latest</span> <span class="comment">#默认值：latest</span></span><br><span class="line">    <span class="comment">#指定了消费者是否自动提交消费位移，默认为true。如果为true，你可能需要关注自动提交的时间间隔，该间隔由auto.commit.interval.ms设置。</span></span><br><span class="line">    <span class="attr">enable-auto-commit:</span> <span class="literal">false</span></span><br><span class="line">    <span class="comment">#周期性自动提交的间隔，单位毫秒</span></span><br><span class="line">    <span class="attr">auto-commit-interval:</span> <span class="number">2000</span> <span class="comment">#默认值：5000</span></span><br><span class="line">    <span class="comment">#参数允许消费者指定从broker读取消息时最小的Payload的字节数。当消费者从broker读取消息时，如果数据字节数小于这个阈值，broker会等待直到有足够的数据，然后才返回给消费者。对于写入量不高的主题来说，这个参数可以减少broker和消费者的压力，因为减少了往返的时间。而对于有大量消费者的主题来说，则可以明显减轻broker压力。</span></span><br><span class="line">    <span class="attr">fetchMinSize:</span> <span class="number">1</span> <span class="comment">#默认值： 1</span></span><br><span class="line">    <span class="comment">#上面的fetch.min.bytes参数指定了消费者读取的最小数据量，而这个参数则指定了消费者读取时最长等待时间，从而避免长时间阻塞。这个参数默认为500ms。</span></span><br><span class="line">    <span class="attr">fetchMaxWait:</span> <span class="number">500</span> <span class="comment">#默认值：500毫秒</span></span><br><span class="line">    <span class="comment">#这个参数控制一个poll()调用返回的记录数，即consumer每次批量拉多少条数据。</span></span><br><span class="line">    <span class="attr">maxPollRecords:</span> <span class="number">500</span> <span class="comment">#默认值：500</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>config</p>
-<figure class="highlight java"><table><tbody><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Config</span> {</span><br><span class="line">    <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> LoggerFactory.getLogger(Config.class);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String error_topic=<span class="string">"error_topic"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> ConcurrentKafkaListenerContainerFactory <span class="title function_">listenerContainerFactory</span><span class="params">(ConsumerFactory consumerFactory, KafkaTemplate&lt;String,Object&gt; template)</span> {</span><br><span class="line">        <span class="type">ConcurrentKafkaListenerContainerFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConcurrentKafkaListenerContainerFactory</span>();</span><br><span class="line">        factory.setConsumerFactory(consumerFactory);</span><br><span class="line">        <span class="comment">// 最大重试次数5次，每次间隔5s(该配置需要参考 Broker.leader 切换的平均时间去设置)</span></span><br><span class="line">        <span class="type">SeekToCurrentErrorHandler</span> <span class="variable">seekToCurrentErrorHandler</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SeekToCurrentErrorHandler</span>((consumerRecord, e) -&gt; {</span><br><span class="line">            logger.error(<span class="string">"重试机制后异常，consumerRecord：{}"</span>, consumerRecord.toString(), e);</span><br><span class="line">            <span class="comment">//做其他业务操作，如记录异常信息到表，发送信息到其他的队列人工核对处理等</span></span><br><span class="line">            template.send(error_topic,consumerRecord.toString());</span><br><span class="line">        }, <span class="keyword">new</span> <span class="title class_">FixedBackOff</span>(<span class="number">5000</span>, <span class="number">5</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">//       批量获取消息的时候，使用该方式</span></span><br><span class="line"><span class="comment">//        SeekToCurrentBatchErrorHandler batchErrorHandler = new SeekToCurrentBatchErrorHandler();</span></span><br><span class="line"></span><br><span class="line">        factory.setErrorHandler(seekToCurrentErrorHandler);</span><br><span class="line">        <span class="comment">//设置提交偏移量的方式 ,否则出现异常的时候, 会报错No Acknowledgment available as an argument, the listener container must have a MANUAL AckMode to populate the Acknowledgment.</span></span><br><span class="line">        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);</span><br><span class="line">        <span class="keyword">return</span> factory;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>]]></content>
-      <categories>
-        <category>config</category>
-      </categories>
-      <tags>
-        <tag>kafka</tag>
       </tags>
   </entry>
   <entry>
