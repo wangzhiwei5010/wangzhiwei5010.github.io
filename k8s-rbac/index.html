@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.wangzhiwei.online","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="123456789101112131415161718192021222324252627RBAC基于角色的访问控制--全拼Role-Based Access Control​Service Account为服务提供了一种方便的认证机制，但它不关心授权的问题。可以配合RBAC来为Service Account鉴权​在Kubernetes中，授权有ABAC（基于属性的访问控制）、RBAC（基于角色的">
+<meta property="og:type" content="website">
+<meta property="og:title" content="k8s的权限管理">
+<meta property="og:url" content="https://blog.wangzhiwei.online/k8s-rbac/index.html">
+<meta property="og:site_name" content="钮玉の博客">
+<meta property="og:description" content="123456789101112131415161718192021222324252627RBAC基于角色的访问控制--全拼Role-Based Access Control​Service Account为服务提供了一种方便的认证机制，但它不关心授权的问题。可以配合RBAC来为Service Account鉴权​在Kubernetes中，授权有ABAC（基于属性的访问控制）、RBAC（基于角色的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-29T03:00:18.000Z">
+<meta property="article:modified_time" content="2022-03-29T03:03:50.000Z">
+<meta property="article:author" content="王志伟">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.wangzhiwei.online/k8s-rbac/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":true,"permalink":"https://blog.wangzhiwei.online/k8s-rbac/index.html","path":"k8s-rbac/index.html","title":"k8s的权限管理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>k8s的权限管理 | 钮玉の博客
+</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="钮玉の博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">钮玉の博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="王志伟"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">王志伟</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="zh-CN"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">k8s的权限管理
+</h1>
+
+<div class="post-meta-container">
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">RBAC基于角色的访问控制--全拼Role-Based Access Control</span><br><span class="line">​</span><br><span class="line">Service Account为服务提供了一种方便的认证机制，但它不关心授权的问题。可以配合RBAC来为Service Account鉴权</span><br><span class="line">​</span><br><span class="line">在Kubernetes中，授权有ABAC（基于属性的访问控制）、RBAC（基于角色的访问控制）、Webhook、Node、AlwaysDeny（一直拒绝）和AlwaysAllow（一直允许）这6种模式。</span><br><span class="line">​</span><br><span class="line">在RABC API中，通过如下的步骤进行授权：</span><br><span class="line">1）定义角色：在定义角色时会指定此角色对于资源的访问控制的规则；</span><br><span class="line">2）绑定角色：将主体与角色进行绑定，对用户进行访问授权。</span><br><span class="line">Role与ClusterRole</span><br><span class="line"> 一个角色包含了一套表示一组权限的规则。 权限以纯粹的累加形式累积（没有"否定"的规则）。 </span><br><span class="line"> Role:角色可以由命名空间内的Role对象定义,一个Role对象只能用于授予对某一单一命名空间中资源的访问权限</span><br><span class="line"> ClusterRole:整个Kubernetes集群范围内有效的角色则通过ClusterRole对象实现。</span><br><span class="line">简介</span><br><span class="line">role:</span><br><span class="line">    1、允许的操作，如get,list等</span><br><span class="line">​</span><br><span class="line">    2、允许操作的对象，如pod,svc等</span><br><span class="line">​</span><br><span class="line">rolebinding:</span><br><span class="line">​</span><br><span class="line">    将哪个用户绑定到哪个role或clusterrole上</span><br><span class="line">​</span><br><span class="line">clusterrole：(集群角色)</span><br><span class="line">clusterrolebinding:(绑定到集群)</span><br><span class="line">    3、如果使用rolebinding绑定到clusterrole上，表示绑定的用户只能用于当前namespace的权限</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<p>创建k8s账号与RBAC授权使用</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">创建账号</span><br><span class="line">1、创建私钥</span><br><span class="line">[root@kub-k8s-master ~]# (umask 077; openssl genrsa -out soso.key 2048)</span><br><span class="line">Generating RSA private key, 2048 bit long modulus</span><br><span class="line">...............................+++</span><br><span class="line">..........................+++</span><br><span class="line">e is 65537 (0x10001)</span><br><span class="line">用此私钥创建一个csr(证书签名请求)文件</span><br><span class="line">[root@kub-k8s-master ~]# openssl  req -new -key soso.key -out soso.csr -subj  "/CN=soso"</span><br><span class="line">​</span><br><span class="line">拿着私钥和请求文件生成证书</span><br><span class="line">[root@kub-k8s-master ~]# openssl x509 -req -in soso.csr -CA  /etc/kubernetes/pki/ca.crt  -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out soso.crt -days 365</span><br><span class="line">Signature ok</span><br><span class="line">subject=/CN=soso</span><br><span class="line">Getting CA Private Key</span><br><span class="line">2、查看证书内容</span><br><span class="line">[root@kub-k8s-master ~]# openssl  x509 -in soso.crt -text -noout</span><br><span class="line">生成账号</span><br><span class="line">[root@kub-k8s-master ~]# kubectl config set-credentials soso --client-certificate=soso.crt --client-key=soso.key --embed-certs=true</span><br><span class="line">User "soso" set.</span><br><span class="line">3、设置上下文环境--指的是这个账号只能在这个环境中才能用</span><br><span class="line">[root@kub-k8s-master ~]# kubectl config set-context soso@kubernetes --cluster=kubernetes --user=soso</span><br><span class="line">Context "soso@kubernetes" created.</span><br><span class="line">查看当前的工作上下文</span><br><span class="line">[root@kub-k8s-master ~]# kubectl config view</span><br><span class="line">apiVersion: v1</span><br><span class="line">clusters:</span><br><span class="line">- cluster:</span><br><span class="line">    certificate-authority-data: DATA+OMITTED</span><br><span class="line">    server: https://192.168.246.166:6443</span><br><span class="line">....</span><br><span class="line">4、切换用户（切换上下文）</span><br><span class="line">[root@kub-k8s-master ~]# kubectl  config use-context soso@kubernetes</span><br><span class="line">Switched to context "soso@kubernetes".</span><br><span class="line">验证是否已经切换到了新的上下文</span><br><span class="line">[root@kub-k8s-master ~]# kubectl config current-context</span><br><span class="line">soso@kubernetes</span><br><span class="line">5.测试（还未赋予权限）</span><br><span class="line">[root@kub-k8s-master ~]# kubectl  get pod</span><br><span class="line">Error from server (Forbidden): pods is forbidden: User "soso" cannot list resource "pods" in API group "" in the namespace "default"</span><br><span class="line">创建一个角色（role）---权限</span><br><span class="line">1.切回管理帐号先</span><br><span class="line">[root@kub-k8s-master ~]# kubectl  config use-context kubernetes-admin@kubernetes</span><br><span class="line">Switched to context "kubernetes-admin@kubernetes".</span><br><span class="line">创建角色：</span><br><span class="line">[root@kub-k8s-master ~]# kubectl  create role  myrole  --verb=get,list,watch --resource=pod,svc</span><br><span class="line">role.rbac.authorization.k8s.io/myrole created</span><br><span class="line">--verb： 相当于是权限</span><br><span class="line">--resource：给什么资源使用</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<p>2.绑定用户soso（上面创建的用户），绑定role为myrole</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[root@kub-k8s-master ~]# kubectl  create  rolebinding myrole-binding  --role=myrole  --user=soso</span><br><span class="line">rolebinding.rbac.authorization.k8s.io/myrole-binding created</span><br></pre></td></tr></tbody></table></figure>
+
+<p>3.切换用户</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@kub-k8s-master ~]# kubectl  config use-context soso@kubernetes</span><br><span class="line">Switched to context "soso@kubernetes".</span><br></pre></td></tr></tbody></table></figure>
+<p>4.查看权限（只授权了default名称空间pod和svc的get，list，watch权限）</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@kub-k8s-master ~]# kubectl  get pod</span><br><span class="line">NAME                    READY   STATUS    RESTARTS   AGE</span><br><span class="line">lifecycle-demo          1/1     Running   1          22h</span><br><span class="line">mypod                   1/1     Running   0          8h</span><br><span class="line">nginx-configmap         1/1     Running   0          4h29m</span><br><span class="line">nginx-pod               1/1     Running   0          39m</span><br><span class="line">[root@kub-k8s-master ~]#  kubectl  get pod -n kube-system  #无权访问kube-system</span><br><span class="line">Error from server (Forbidden): pods is forbidden: User "soso" cannot list resource "pods" in API group "" in the namespace "kube-system"</span><br><span class="line">[root@kub-k8s-master ~]# kubectl  delete pod nginx-pod   #无权限删除</span><br><span class="line">Error from server (Forbidden): pods "nginx-pod" is forbidden: User "soso" cannot delete resource "pods" in API group "" in the namespace "default"</span><br><span class="line">​</span><br></pre></td></tr></tbody></table></figure>
+
+<p>5.切换用户</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@kub-k8s-master ~]# kubectl  config use-context kubernetes-admin@kubernetes</span><br><span class="line">Switched to context "kubernetes-admin@kubernetes".</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">实验二</span><br><span class="line">​</span><br><span class="line">6.删除soso账号之前绑定的rolebinding</span><br><span class="line">[root@kub-k8s-master ~]# kubectl  delete rolebinding myrole-binding </span><br><span class="line">rolebinding.rbac.authorization.k8s.io "myrole-binding" deleted</span><br><span class="line">7.创建clusterrole #可以访问全部的namespace</span><br><span class="line">[root@kub-k8s-master ~]# kubectl create clusterrole myclusterrole --verb=get,list,watch --resource=pod,svc</span><br><span class="line">clusterrole.rbac.authorization.k8s.io/myclusterrole created</span><br><span class="line">​</span><br><span class="line">8.绑定集群角色到用户soso</span><br><span class="line">[root@kub-k8s-master ~]# kubectl  create clusterrolebinding my-cluster-rolebinding   --clusterrole=myclusterrole --user=soso</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/my-cluster-rolebinding created</span><br><span class="line">​</span><br><span class="line">8.切换账号</span><br><span class="line">[root@kub-k8s-master ~]# kubectl  config use-context soso@kubernetes</span><br><span class="line">Switched to context "soso@kubernetes".</span><br><span class="line">​</span><br><span class="line">9.查看权限 查看kube-system空间的pod</span><br><span class="line">[root@kub-k8s-master ~]# kubectl  get pod -n kube-system</span><br><span class="line">NAME                                     READY   STATUS    RESTARTS   AGE</span><br><span class="line">coredns-5644d7b6d9-sm8hs                 1/1     Running   0          5d</span><br><span class="line">coredns-5644d7b6d9-vddll                 1/1     Running   0          5d</span><br><span class="line">etcd-kub-k8s-master                      1/1     Running   0          5d</span><br><span class="line">... </span><br><span class="line">​</span><br><span class="line">注意：10.切换为管理员用户</span><br><span class="line">[root@kub-k8s-master ~]# kubectl  config use-context kubernetes-admin@kubernetes</span><br></pre></td></tr></tbody></table></figure>
+      </div>
+      
+      
+      
+    </div>
+
+    
+    
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2019 – 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">true</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

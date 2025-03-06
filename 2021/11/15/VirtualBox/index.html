@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.wangzhiwei.online","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="virtual box的一些常用命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="虚拟机VirtualBox的小结">
+<meta property="og:url" content="https://blog.wangzhiwei.online/2021/11/15/VirtualBox/index.html">
+<meta property="og:site_name" content="钮玉の博客">
+<meta property="og:description" content="virtual box的一些常用命令">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-15T06:39:00.000Z">
+<meta property="article:modified_time" content="2021-11-15T06:40:25.000Z">
+<meta property="article:author" content="王志伟">
+<meta property="article:tag" content="shell">
+<meta property="article:tag" content="virtualbox">
+<meta property="article:tag" content="cmd">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.wangzhiwei.online/2021/11/15/VirtualBox/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.wangzhiwei.online/2021/11/15/VirtualBox/","path":"2021/11/15/VirtualBox/","title":"虚拟机VirtualBox的小结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>虚拟机VirtualBox的小结 | 钮玉の博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="钮玉の博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">钮玉の博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">虚拟机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E4%B8%BB%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">操作主机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E8%B7%AF"><span class="nav-number">3.</span> <span class="nav-text">网路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E5%85%8B%E9%9A%86"><span class="nav-number">4.</span> <span class="nav-text">磁盘克隆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%90%8D"><span class="nav-number">5.</span> <span class="nav-text">主机名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E4%B8%BB%E6%9C%BA%E5%90%8D%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">5.1.</span> <span class="nav-text">查看主机名的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B4%E6%97%B6%E4%BF%AE%E6%94%B9%E4%B8%BB%E6%9C%BA%E5%90%8D"><span class="nav-number">5.2.</span> <span class="nav-text">临时修改主机名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B0%B8%E4%B9%85%E4%BF%AE%E6%94%B9%E4%B8%BB%E6%9C%BA%E5%90%8D"><span class="nav-number">5.3.</span> <span class="nav-text">永久修改主机名</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH"><span class="nav-number">6.</span> <span class="nav-text">SSH</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="王志伟"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">王志伟</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.wangzhiwei.online/2021/11/15/VirtualBox/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="王志伟">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="钮玉の博客">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="虚拟机VirtualBox的小结 | 钮玉の博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          虚拟机VirtualBox的小结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-11-15 06:39:00 / 修改时间：06:40:25" itemprop="dateCreated datePublished" datetime="2021-11-15T06:39:00+00:00">2021-11-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">中间件</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>virtual box的一些常用命令</p>
+<span id="more"></span>
+<h2 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h2><ul>
+<li><p>支持列表</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage list ostypes</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>创建虚拟机</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage createvm --name <span class="string">"k8s-node-3"</span> --ostype Ubuntu_64 --register</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>设置内存大小，启动顺序，网络模式</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage modifyvm <span class="string">"k8s-node-3"</span> --memory 2048 --acpi on --boot1 dvd --nic1 bridged</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>创建一个磁盘镜像，指定大小（MB）</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage createhd --filename <span class="string">"k8s-node-3/CentOS.vdi"</span> --size 5000</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><p>调整大小</p>
+  <figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">VBoxManage</span> <span class="string">modifyhd</span> <span class="string">k8s-node-1.vdi</span> <span class="string">--resize</span> <span class="number">20480</span></span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+</li>
+<li><p>创建一个IDE存储控制器</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage storagectl <span class="string">"k8s-node-3"</span> --name <span class="string">"SATA"</span> --add sata --controller IntelAHCI</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>将之前创建的镜像文件CentOS.vdi 添加到ide存储控制器中，并指定位置等。</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage storageattach <span class="string">"k8s-node-3"</span> --storagectl <span class="string">"SATA"</span> --port 0 --device 0 --<span class="built_in">type</span> hdd --medium k8s-node-3.vdi</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>添加光驱并添加系统盘ISO镜像文件。</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vboxmanage storageattach <span class="string">"CentOS 5.0"</span> --storagectl <span class="string">"IDE Controller"</span> --port 0 --device 1 --<span class="built_in">type</span> dvddrive --medium xxx-xxx-.iso</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>设置显卡驱动</p>
+<p>  ``</p>
+</li>
+</ul>
+<h2 id="操作主机"><a href="#操作主机" class="headerlink" title="操作主机"></a>操作主机</h2><ul>
+<li><p>查看所有虚拟机</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage list vms</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>查看正在运行的虚拟机</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxmanage list runningvms</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>启动</p>
+<ul>
+<li><p>无界面启动</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxmanage startvm <span class="string">"CentOS-4"</span> --<span class="built_in">type</span> headless</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用gui类型启动虚拟机</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage startvm XP --<span class="built_in">type</span> gui</span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+</li>
+<li><p>正常关闭虚拟机</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage controlvm <span class="string">"CentOS-4"</span> acpipowerbutton</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>强制关机</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage controlvm <span class="string">"CentOS-2"</span> poweroff</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>相关命令</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage list runningvms <span class="comment"># 列出运行中的虚拟机</span></span><br><span class="line">VBoxManage controlvm XP acpipowerbutton <span class="comment">#关闭虚拟机，等价于点击系统关闭按钮，正常关机</span></span><br><span class="line">VBoxManage controlvm XP poweroff <span class="comment"># 关闭虚拟机，等价于直接关闭电源，非正常关机</span></span><br><span class="line">VBoxManage controlvm XP pause <span class="comment"># 暂停虚拟机的运行</span></span><br><span class="line">VBoxManage controlvm XP resume <span class="comment"># 恢复暂停的虚拟机</span></span><br><span class="line">VBoxManage controlvm XP savestate <span class="comment"># 保存当前虚拟机的运行状态</span></span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+<h2 id="网路"><a href="#网路" class="headerlink" title="网路"></a>网路</h2><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage hostonlyif create</span><br><span class="line">VBoxManage list hostonlyifs</span><br><span class="line">VBoxManage hostonlyif remove vboxnet1</span><br><span class="line">VBoxManage dhcpserver modify -ifname vboxnet1 -server-ip=192.168.57.2 -netmask=255.255.255.0 -lowerip=192.168.57.100 -upperip=192.168.57.199 -<span class="built_in">enable</span></span><br><span class="line">VBoxManage dhcpserver modify -ifname vboxnet0 -server-ip=192.168.56.2 -netmask=255.255.255.0 -lowerip=192.168.56.100 -upperip=192.168.56.199 -<span class="built_in">enable</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="磁盘克隆"><a href="#磁盘克隆" class="headerlink" title="磁盘克隆"></a>磁盘克隆</h2><p>用命令克隆已经存在的.vdi文件，克隆后会自动更改UUID。打开cmd窗口，cd到VirtualBox的安装目录，命令如下</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage clonehd &lt;源vdi文件路径&gt; &lt;目标vdi文件路径&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>先手动复制.vdi文件，然后用命令更改UUID。用如下命令更改UUID：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage internalcommands sethduuid</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="主机名"><a href="#主机名" class="headerlink" title="主机名"></a>主机名</h2><h3 id="查看主机名的方法"><a href="#查看主机名的方法" class="headerlink" title="查看主机名的方法"></a>查看主机名的方法</h3><blockquote>
+<p>在Ubuntu系统中，快速查看主机名有多种方法：</p>
+</blockquote>
+<ul>
+<li><p>在终端中输入命令：</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@itcast:~# hostname</span><br><span class="line">itcast</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>在终端窗口中输入命令：uname -a可以查看到当前主机的主机名</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@itcast:~# <span class="built_in">uname</span> -a</span><br><span class="line">Linux itcast 4.10.0-28-generic <span class="comment">#32~16.04.2-Ubuntu SMP Thu Jul 20 10:19:48 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux</span></span><br><span class="line">root@itcast:~#</span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+<h3 id="临时修改主机名"><a href="#临时修改主机名" class="headerlink" title="临时修改主机名"></a>临时修改主机名</h3><ul>
+<li><p>运行命令</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hostname 新主机名</span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+<blockquote>
+<p>其中“新主机名”可以用任何合法字符串来表示。不过采用这种方式，新主机名并不保存在系统中，重启系统后主机名将恢复为原先的主机名称。</p>
+</blockquote>
+<blockquote>
+<p>这样主机名字就临时被修改为deng，但是终端下不会立即显示生效后的主机名，重开一个终端窗口(通过ssh连接的终端需要重新连接才可以);</p>
+</blockquote>
+<h3 id="永久修改主机名"><a href="#永久修改主机名" class="headerlink" title="永久修改主机名"></a>永久修改主机名</h3><blockquote>
+<p>在Ubuntu系统中永久修改主机名也比较简单。主机名存放在/etc/hostname文件中，修改主机名时，编辑hostname文件，在文件中输入新的主机名并保存该文件即可。重启系统后，参照上面介绍的快速查看主机名的办法来确认主机名有没有修改成功。</p>
+</blockquote>
+<blockquote>
+<p>值的指出的是，在其它Linux发行版中，并非都存在/etc/hostname文件。如Fedora发行版将主机名存放在/etc/sysconfig/network文件中。所以，修改主机名时应注意区分是哪种Linux发行版。</p>
+</blockquote>
+<ul>
+<li><p>第一步： 修改/etc/hostname</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/etc/hostname中存放的是主机名，hostname文件的一个例子：</span><br><span class="line">root@itcast:~# vim /etc/hostname</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>第二步：修改/etc/hosts配置文件（可选）</p>
+<p>  /etc/hosts存放的是域名与ip的对应关系，域名与主机名没有任何关系，你可以为任何一个IP指定任意一个名字。</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/hosts</span><br><span class="line">127.0.0.1 k8s-master</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>第三步：重启系统</p>
+<p>  root@itcast:~# sudo reboot</p>
+</li>
+</ul>
+<h2 id="SSH"><a href="#SSH" class="headerlink" title="SSH"></a>SSH</h2><ul>
+<li><p>安装</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install openssh-server</span><br></pre></td></tr></tbody></table></figure>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install openssh-client</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>扩展配置</p>
+<p>  SSH默认服务端口为22，用户可以自已定义端口，如9090，需要修改的配置文件为</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> vim /etc/ssh/sshd_config</span><br></pre></td></tr></tbody></table></figure>
+<p>  然后重启SSH服务：</p>
+  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> /etc/init.d/ssh restart</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li></li>
+</ul>
+<pre><code><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 关于 SSH Server 的整体设定，包含使用的 port 啦，以及使用的密码演算方式</span></span><br><span class="line">Port 22　　　　　　　　　　<span class="comment"># SSH 预设使用 22 这个 port，您也可以使用多的 port ！</span></span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># 亦即重复使用 port 这个设定项目即可！</span></span><br><span class="line">Protocol 2,1　　　　　　　 <span class="comment"># 选择的 SSH 协议版本，可以是 1 也可以是 2 ，</span></span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># 如果要同时支持两者，就必须要使用 2,1 这个分隔了！</span></span><br><span class="line"><span class="comment">#ListenAddress 0.0.0.0　　 # 监听的主机适配卡！举个例子来说，如果您有两个 IP，</span></span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># 分别是 192.168.0.100 及 192.168.2.20 ，那么只想要</span></span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># 开放 192.168.0.100 时，就可以写如同下面的样式：</span></span><br><span class="line">ListenAddress 192.168.0.100          <span class="comment"># 只监听来自 192.168.0.100 这个 IP 的SSH联机。</span></span><br><span class="line">　　　　　　　　　　　　　　　　　　 <span class="comment"># 如果不使用设定的话，则预设所有接口均接受 SSH</span></span><br><span class="line">PidFile /var/run/sshd.pid　　　　　　<span class="comment"># 可以放置 SSHD 这个 PID 的档案！左列为默认值</span></span><br><span class="line">LoginGraceTime 600　　　　 <span class="comment"># 当使用者连上 SSH server 之后，会出现输入密码的画面，</span></span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># 在该画面中，在多久时间内没有成功连上 SSH server ，</span></span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># 就断线！时间为秒！</span></span><br><span class="line">Compression <span class="built_in">yes</span>　　　　　　<span class="comment"># 是否可以使用压缩指令？当然可以啰！</span></span><br><span class="line">　</span><br><span class="line"><span class="comment"># 2. 说明主机的 Private Key 放置的档案，预设使用下面的档案即可！</span></span><br><span class="line">HostKey /etc/ssh/ssh_host_key　　　　<span class="comment"># SSH version 1 使用的私钥</span></span><br><span class="line">HostKey /etc/ssh/ssh_host_rsa_key　　<span class="comment"># SSH version 2 使用的 RSA 私钥</span></span><br><span class="line">HostKey /etc/ssh/ssh_host_dsa_key　　<span class="comment"># SSH version 2 使用的 DSA 私钥</span></span><br><span class="line"><span class="comment"># 2.1 关于 version 1 的一些设定！</span></span><br><span class="line">KeyRegenerationInterval 3600　 　　　<span class="comment"># 由前面联机的说明可以知道， version 1 会使用 </span></span><br><span class="line">　　　　　　　　　　　　　　　　　　 <span class="comment"># server 的 Public Key ，那么如果这个 Public </span></span><br><span class="line">　　　　　　　　　　　　　　　　　　 <span class="comment"># Key 被偷的话，岂不完蛋？所以需要每隔一段时间</span></span><br><span class="line">　　　　　　　　　　　　　　　　　　 <span class="comment"># 来重新建立一次！这里的时间为秒！</span></span><br><span class="line">ServerKeyBits 768 　　　　　　　　　 <span class="comment"># 没错！这个就是 Server key 的长度！</span></span><br><span class="line"><span class="comment"># 3. 关于登录文件的讯息数据放置与 daemon 的名称！</span></span><br><span class="line">SyslogFacility AUTH　　　　　　　　　<span class="comment"># 当有人使用 SSH 登入系统的时候，SSH会记录资</span></span><br><span class="line">　　　　　　　　　　　　　　　　　　 <span class="comment"># 讯，这个信息要记录在什么 daemon name 底下？</span></span><br><span class="line">　　　　　　　　　　　　　　　　　　 <span class="comment"># 预设是以 AUTH 来设定的，即是 /var/log/secure</span></span><br><span class="line">　　　　　　　　　　　　　　　　　　 <span class="comment"># 里面！什么？忘记了！回到 Linux 基础去翻一下</span></span><br><span class="line">　　　　　　　　　　　　　　　　　　 <span class="comment"># 其它可用的 daemon name 为：DAEMON,USER,AUTH,</span></span><br><span class="line">　　　　　　　　　　　　　　　　　　 <span class="comment"># LOCAL0,LOCAL1,LOCAL2,LOCAL3,LOCAL4,LOCAL5,</span></span><br><span class="line">LogLevel INFO　　　　　　　　　　　　<span class="comment"># 登录记录的等级！嘿嘿！任何讯息！</span></span><br><span class="line">　　　　　　　　　　　　　　　　　　 <span class="comment"># 同样的，忘记了就回去参考！</span></span><br><span class="line"><span class="comment"># 4. 安全设定项目！极重要！</span></span><br><span class="line"><span class="comment"># 4.1 登入设定部分</span></span><br><span class="line">PermitRootLogin no　　 　　<span class="comment"># 是否允许 root 登入！预设是允许的，但是建议设定成 no！</span></span><br><span class="line">UserLogin no　　　　　　　 <span class="comment"># 在 SSH 底下本来就不接受 login 这个程序的登入！</span></span><br><span class="line">StrictModes <span class="built_in">yes</span>　　　　　　<span class="comment"># 当使用者的 host key 改变之后，Server 就不接受联机，</span></span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># 可以抵挡部分的木马程序！</span></span><br><span class="line"><span class="comment">#RSAAuthentication yes　　 # 是否使用纯的 RSA 认证！？仅针对 version 1 ！</span></span><br><span class="line">PubkeyAuthentication <span class="built_in">yes</span>　 <span class="comment"># 是否允许 Public Key ？当然允许啦！只有 version 2</span></span><br><span class="line">AuthorizedKeysFile      .ssh/authorized_keys</span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># 上面这个在设定若要使用不需要密码登入的账号时，那么那个</span></span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># 账号的存放档案所在档名！</span></span><br><span class="line"><span class="comment"># 4.2 认证部分</span></span><br><span class="line">RhostsAuthentication no　　<span class="comment"># 本机系统不止使用 .rhosts ，因为仅使用 .rhosts 太</span></span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># 不安全了，所以这里一定要设定为 no ！</span></span><br><span class="line">IgnoreRhosts <span class="built_in">yes</span>　　　　　 <span class="comment"># 是否取消使用 ~/.ssh/.rhosts 来做为认证！当然是！</span></span><br><span class="line">RhostsRSAAuthentication no <span class="comment"># 这个选项是专门给 version 1 用的，使用 rhosts 档案在</span></span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># /etc/hosts.equiv配合 RSA 演算方式来进行认证！不要使用</span></span><br><span class="line">HostbasedAuthentication no <span class="comment"># 这个项目与上面的项目类似，不过是给 version 2 使用的！</span></span><br><span class="line">IgnoreUserKnownHosts no　　<span class="comment"># 是否忽略家目录内的 ~/.ssh/known_hosts 这个档案所记录</span></span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># 的主机内容？当然不要忽略，所以这里就是 no 啦！</span></span><br><span class="line">PasswordAuthentication <span class="built_in">yes</span> <span class="comment"># 密码验证当然是需要的！所以这里写 yes 啰！</span></span><br><span class="line">PermitEmptyPasswords no　　<span class="comment"># 若上面那一项如果设定为 yes 的话，这一项就最好设定</span></span><br><span class="line">　　　　　　　　　　　　　 <span class="comment"># 为 no ，这个项目在是否允许以空的密码登入！当然不许！</span></span><br><span class="line">ChallengeResponseAuthentication <span class="built_in">yes</span>  <span class="comment"># 挑战任何的密码认证！所以，任何 login.conf </span></span><br><span class="line">　　　　　　　　　　　　　　　　　　 <span class="comment"># 规定的认证方式，均可适用！</span></span><br><span class="line"><span class="comment">#PAMAuthenticationViaKbdInt yes      # 是否启用其它的 PAM 模块！启用这个模块将会</span></span><br><span class="line">　　　　　　　　　　　　　　　　　　 <span class="comment"># 导致 PasswordAuthentication 设定失效！</span></span><br><span class="line">　</span><br><span class="line"><span class="comment"># 4.3 与 Kerberos 有关的参数设定！因为我们没有 Kerberos 主机，所以底下不用设定！</span></span><br><span class="line"><span class="comment">#KerberosAuthentication no</span></span><br><span class="line"><span class="comment">#KerberosOrLocalPasswd yes</span></span><br><span class="line"><span class="comment">#KerberosTicketCleanup yes</span></span><br><span class="line"><span class="comment">#KerberosTgtPassing no</span></span><br><span class="line">　</span><br><span class="line"><span class="comment"># 4.4 底下是有关在 X-Window 底下使用的相关设定！</span></span><br><span class="line">X11Forwarding <span class="built_in">yes</span></span><br><span class="line"><span class="comment">#X11DisplayOffset 10</span></span><br><span class="line"><span class="comment">#X11UseLocalhost yes</span></span><br><span class="line"><span class="comment"># 4.5 登入后的项目：</span></span><br><span class="line">PrintMotd no              <span class="comment"># 登入后是否显示出一些信息呢？例如上次登入的时间、地点等</span></span><br><span class="line">　　　　　　　　　　　　　<span class="comment"># 等，预设是 yes ，但是，如果为了安全，可以考虑改为 no ！</span></span><br><span class="line">PrintLastLog <span class="built_in">yes</span>　　　　　<span class="comment"># 显示上次登入的信息！可以啊！预设也是 yes ！</span></span><br><span class="line">KeepAlive <span class="built_in">yes</span>　　　　　　 <span class="comment"># 一般而言，如果设定这项目的话，那么 SSH Server 会传送</span></span><br><span class="line">　　　　　　　　　　　　　<span class="comment"># KeepAlive 的讯息给 Client 端，以确保两者的联机正常！</span></span><br><span class="line">　　　　　　　　　　　　　<span class="comment"># 在这个情况下，任何一端死掉后， SSH 可以立刻知道！而不会</span></span><br><span class="line">　　　　　　　　　　　　　<span class="comment"># 有僵尸程序的发生！</span></span><br><span class="line">UsePrivilegeSeparation <span class="built_in">yes</span> <span class="comment"># 使用者的权限设定项目！就设定为 yes 吧！</span></span><br><span class="line">MaxStartups 10　　　　　　<span class="comment"># 同时允许几个尚未登入的联机画面？当我们连上 SSH ，</span></span><br><span class="line">　　　　　　　　　　　　　<span class="comment"># 但是尚未输入密码时，这个时候就是我们所谓的联机画面啦！</span></span><br><span class="line">　　　　　　　　　　　　　<span class="comment"># 在这个联机画面中，为了保护主机，所以需要设定最大值，</span></span><br><span class="line">　　　　　　　　　　　　　<span class="comment"># 预设最多十个联机画面，而已经建立联机的不计算在这十个当中</span></span><br><span class="line"><span class="comment"># 4.6 关于使用者抵挡的设定项目：</span></span><br><span class="line">DenyUsers *　　　　　　　 <span class="comment"># 设定受抵挡的使用者名称，如果是全部的使用者，那就是全部</span></span><br><span class="line">　　　　　　　　　　　　　<span class="comment"># 挡吧！若是部分使用者，可以将该账号填入！例如下列！</span></span><br><span class="line">DenyUsers <span class="built_in">test</span></span><br><span class="line">DenyGroups <span class="built_in">test</span>　　　　　 <span class="comment"># 与 DenyUsers 相同！仅抵挡几个群组而已！</span></span><br><span class="line"><span class="comment"># 5. 关于 SFTP 服务的设定项目！</span></span><br><span class="line">Subsystem       sftp    /usr/lib/ssh/sftp-server</span><br></pre></td></tr></tbody></table></figure>
+</code></pre>
+<p>LVM</p>
+<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>王志伟
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.wangzhiwei.online/2021/11/15/VirtualBox/" title="虚拟机VirtualBox的小结">https://blog.wangzhiwei.online/2021/11/15/VirtualBox/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/shell/" rel="tag"><i class="fa fa-tag"></i> shell</a>
+              <a href="/tags/virtualbox/" rel="tag"><i class="fa fa-tag"></i> virtualbox</a>
+              <a href="/tags/cmd/" rel="tag"><i class="fa fa-tag"></i> cmd</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/11/14/git/" rel="prev" title="版本管理软件git">
+                  <i class="fa fa-angle-left"></i> 版本管理软件git
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/11/16/ADC/" rel="next" title="行政区划码">
+                  行政区划码 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2019 – 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">true</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
