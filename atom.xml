@@ -6,7 +6,7 @@
   <link href="https://blog.wangzhiwei.online/atom.xml" rel="self"/>
   
   <link href="https://blog.wangzhiwei.online/"/>
-  <updated>2022-05-20T16:41:00.000Z</updated>
+  <updated>2022-05-05T05:54:20.000Z</updated>
   <id>https://blog.wangzhiwei.online/</id>
   
   <author>
@@ -15,27 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>reflection</title>
-    <link href="https://blog.wangzhiwei.online/2022/05/20/reflection/"/>
-    <id>https://blog.wangzhiwei.online/2022/05/20/reflection/</id>
-    <published>2022-05-20T16:40:56.000Z</published>
-    <updated>2022-05-20T16:41:00.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>在群中</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;在群中&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    
-  </entry>
   
   <entry>
     <title>cas的0到1的过程</title>
@@ -78,27 +57,6 @@
     
     
     <category term="virtual" scheme="https://blog.wangzhiwei.online/tags/virtual/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>行政区划码</title>
-    <link href="https://blog.wangzhiwei.online/2021/11/16/ADC/"/>
-    <id>https://blog.wangzhiwei.online/2021/11/16/ADC/</id>
-    <published>2021-11-16T15:35:00.000Z</published>
-    <updated>2021-11-24T03:30:59.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>行政区划代码是中央集权制主权国家对能够统治的行施管辖区域进行分级分层进行管辖用信息化手段编制的对各层级行政区划编制的替代数码，一般执行两项国家标准：《中华人民共和国行政区划代码》（GB/T2260-80，82，84，86，88，91，1995，1999，2002，2007共十个成文标准，以后以民政部网站发布的各年根据全国人民代表大会、国务院、民政部对县级以上行政区划变更发布，不再出台成文标准)，这个标准是以6位码长阿拉伯数字每2位码长数字分别表示我国第一级省级行政区划（涵盖省、自治区、直辖市和特别行政区）；第二级地级行政区划（涵盖省辖行政区、地级市、自治州、地区、盟）；第三级县级行政区划（涵盖直辖市和地级市的市辖区、地级市辖特区、林区、矿区、工矿区、工农区、县、县级市、自治县、旗、自治旗、县级镇、岛礁及其海域）和《县以下行政区划代码编制规则》（GB/T10114-2003)，这个标准由9位码长阿拉伯数字组成。按照国务院最新的中华人民共和国国务院令（2018）第704号《行政区划管理条例》规定，行政区划代码由民政部门确定、发布。<br><br>为了更详细地反映乡镇以下区划情况，国家统计局补充了三位表示居委会、村委会的代码。</p><span id="more"></span><p><b>代码从左至右的含义是：</b></p><ol><li><b>第一、二位</b>表示省级（含<b>省</b>、<b>自治区</b>、<b>直辖市</b>、<b>特别行政区</b>）。</li><li><b>第三、四位</b>表示地级（含<b>省辖行政区</b>、<b>地级市</b>、<b>自治州</b>、<b>地区</b>、<b>盟</b>及<b>中央直辖市所属市辖区和县</b>的汇总码和<b>省或自治区直辖县</b>级行政区划汇总码）。其中，01-20，51-70表示省直辖市；21-50表示地区（自治州、盟）。90表示省或自治区直辖县级行政区划汇总码</li><li><b>第五、六位</b>表示县级（<b>市辖区、县级市、旗</b>）。01-20表示市辖区或地区（自治州、盟）辖县级市；21-70表示县（旗）；81-99表示省直辖县级市；71-80表示工业园区或者经济开发区。</li><li><b>第七至九位</b>表示<b>乡、镇（街道办事处）</b>。其中000-099表示街道办事处，100-199表示镇，200-299表示乡，400-479表示林场、牧场、科技城、园区，480-499表示林业管理局，500-579表示农场、团，580-599表示畜牧场。</li></ol><table><thead><tr><th>地名</th><th>行政代码</th><th>级别</th><th>镇(乡)</th><th>县(区)</th><th>市(直辖)</th><th>省</th><th>国家</th><th>简介</th></tr></thead><tbody><tr><td>北京市</td><td>110000000000</td><td>省级</td><td></td><td></td><td></td><td>北京市</td><td>中国</td><td><a href="/ADC/110000.html">北京市介绍</a></td></tr><tr><td>天津市</td><td>120000000000</td><td>省级</td><td></td><td></td><td></td><td>天津市</td><td>中国</td><td><a href="/ADC/120000.html">天津市介绍</a></td></tr><tr><td>河北省</td><td>130000000000</td><td>省级</td><td></td><td></td><td></td><td>河北省</td><td>中国</td><td><a href="/ADC/130000.html">河北省介绍</a></td></tr><tr><td>山西省</td><td>140000000000</td><td>省级</td><td></td><td></td><td></td><td>山西省</td><td>中国</td><td><a href="/ADC/140000.html">山西省介绍</a></td></tr><tr><td>内蒙古自治区</td><td>150000000000</td><td>省级</td><td></td><td></td><td></td><td>内蒙古自治区</td><td>中国</td><td><a href="/ADC/150000.html">内蒙古自治区介绍</a></td></tr><tr><td>辽宁省</td><td>210000000000</td><td>省级</td><td></td><td></td><td></td><td>辽宁省</td><td>中国</td><td><a href="/ADC/210000.html">辽宁省介绍</a></td></tr><tr><td>吉林省</td><td>220000000000</td><td>省级</td><td></td><td></td><td></td><td>吉林省</td><td>中国</td><td><a href="/ADC/220000.html">吉林省介绍</a></td></tr><tr><td>黑龙江省</td><td>230000000000</td><td>省级</td><td></td><td></td><td></td><td>黑龙江省</td><td>中国</td><td><a href="/ADC/230000.html">黑龙江省介绍</a></td></tr><tr><td>上海市</td><td>310000000000</td><td>省级</td><td></td><td></td><td></td><td>上海市</td><td>中国</td><td><a href="/ADC/310000.html">上海市介绍</a></td></tr><tr><td>江苏省</td><td>320000000000</td><td>省级</td><td></td><td></td><td></td><td>江苏省</td><td>中国</td><td><a href="/ADC/320000.html">江苏省介绍</a></td></tr><tr><td>浙江省</td><td>330000000000</td><td>省级</td><td></td><td></td><td></td><td>浙江省</td><td>中国</td><td><a href="/ADC/330000.html">浙江省介绍</a></td></tr><tr><td>安徽省</td><td>340000000000</td><td>省级</td><td></td><td></td><td></td><td>安徽省</td><td>中国</td><td><a href="/ADC/340000.html">安徽省介绍</a></td></tr><tr><td>福建省</td><td>350000000000</td><td>省级</td><td></td><td></td><td></td><td>福建省</td><td>中国</td><td><a href="/ADC/350000.html">福建省介绍</a></td></tr><tr><td>江西省</td><td>360000000000</td><td>省级</td><td></td><td></td><td></td><td>江西省</td><td>中国</td><td><a href="/ADC/360000.html">江西省介绍</a></td></tr><tr><td>山东省</td><td>370000000000</td><td>省级</td><td></td><td></td><td></td><td>山东省</td><td>中国</td><td><a href="/ADC/370000.html">山东省介绍</a></td></tr><tr><td>河南省</td><td>410000000000</td><td>省级</td><td></td><td></td><td></td><td>河南省</td><td>中国</td><td><a href="/ADC/410000.html">河南省介绍</a></td></tr><tr><td>湖北省</td><td>420000000000</td><td>省级</td><td></td><td></td><td></td><td>湖北省</td><td>中国</td><td><a href="/ADC/420000.html">湖北省介绍</a></td></tr><tr><td>湖南省</td><td>430000000000</td><td>省级</td><td></td><td></td><td></td><td>湖南省</td><td>中国</td><td><a href="/ADC/430000.html">湖南省介绍</a></td></tr><tr><td>广东省</td><td>440000000000</td><td>省级</td><td></td><td></td><td></td><td>广东省</td><td>中国</td><td><a href="/ADC/440000.html">广东省介绍</a></td></tr><tr><td>广西壮族自治区</td><td>450000000000</td><td>省级</td><td></td><td></td><td></td><td>广西壮族自治区</td><td>中国</td><td><a href="/ADC/450000.html">广西壮族自治区介绍</a></td></tr><tr><td>海南省</td><td>460000000000</td><td>省级</td><td></td><td></td><td></td><td>海南省</td><td>中国</td><td><a href="/ADC/460000.html">海南省介绍</a></td></tr><tr><td>重庆市</td><td>500000000000</td><td>省级</td><td></td><td></td><td></td><td>重庆市</td><td>中国</td><td><a href="/ADC/500000.html">重庆市介绍</a></td></tr><tr><td>四川省</td><td>510000000000</td><td>省级</td><td></td><td></td><td></td><td>四川省</td><td>中国</td><td><a href="/ADC/510000.html">四川省介绍</a></td></tr><tr><td>贵州省</td><td>520000000000</td><td>省级</td><td></td><td></td><td></td><td>贵州省</td><td>中国</td><td><a href="/ADC/520000.html">贵州省介绍</a></td></tr><tr><td>云南省</td><td>530000000000</td><td>省级</td><td></td><td></td><td></td><td>云南省</td><td>中国</td><td><a href="/ADC/530000.html">云南省介绍</a></td></tr><tr><td>西藏自治区</td><td>540000000000</td><td>省级</td><td></td><td></td><td></td><td>西藏自治区</td><td>中国</td><td><a href="/ADC/540000.html">西藏自治区介绍</a></td></tr><tr><td>陕西省</td><td>610000000000</td><td>省级</td><td></td><td></td><td></td><td>陕西省</td><td>中国</td><td><a href="/ADC/610000.html">陕西省介绍</a></td></tr><tr><td>甘肃省</td><td>620000000000</td><td>省级</td><td></td><td></td><td></td><td>甘肃省</td><td>中国</td><td><a href="/ADC/620000.html">甘肃省介绍</a></td></tr><tr><td>青海省</td><td>630000000000</td><td>省级</td><td></td><td></td><td></td><td>青海省</td><td>中国</td><td><a href="/ADC/630000.html">青海省介绍</a></td></tr><tr><td>宁夏回族自治区</td><td>640000000000</td><td>省级</td><td></td><td></td><td></td><td>宁夏回族自治区</td><td>中国</td><td><a href="/ADC/640000.html">宁夏回族自治区介绍</a></td></tr><tr><td>新疆维吾尔自治区</td><td>650000000000</td><td>省级</td><td></td><td></td><td></td><td>新疆维吾尔自治区</td><td>中国</td><td><a href="/ADC/650000.html">新疆维吾尔自治区介绍</a></td></tr><tr><td>台湾省</td><td>710000000000</td><td>省级</td><td></td><td></td><td></td><td></td><td>中国</td><td><a href="/ADC/710000.html">台湾省介绍</a></td></tr><tr><td>香港特别行政区</td><td>810000000000</td><td>省级</td><td></td><td></td><td></td><td></td><td>中国</td><td><a href="/ADC/810000.html">香港特别行政区介绍</a></td></tr><tr><td>澳门特别行政区</td><td>820000000000</td><td>省级</td><td></td><td></td><td></td><td></td><td>中国</td><td><a href="/ADC/820000.html">澳门特别行政区介绍</a></td></tr></tbody></table>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;行政区划代码是中央集权制主权国家对能够统治的行施管辖区域进行分级分层进行管辖用信息化手段编制的对各层级行政区划编制的替代数码，一般执行两项国家标准：《中华人民共和国行政区划代码》（GB/T2260-80，82，84，86，88，91，1995，1999，2002，2007共十个成文标准，以后以民政部网站发布的各年根据全国人民代表大会、国务院、民政部对县级以上行政区划变更发布，不再出台成文标准)，这个标准是以6位码长阿拉伯数字每2位码长数字分别表示我国第一级省级行政区划（涵盖省、自治区、直辖市和特别行政区）；第二级地级行政区划（涵盖省辖行政区、地级市、自治州、地区、盟）；第三级县级行政区划（涵盖直辖市和地级市的市辖区、地级市辖特区、林区、矿区、工矿区、工农区、县、县级市、自治县、旗、自治旗、县级镇、岛礁及其海域）和《县以下行政区划代码编制规则》（GB/T10114-2003)，这个标准由9位码长阿拉伯数字组成。按照国务院最新的中华人民共和国国务院令（2018）第704号《行政区划管理条例》规定，行政区划代码由民政部门确定、发布。&lt;br&gt;&lt;br&gt;为了更详细地反映乡镇以下区划情况，国家统计局补充了三位表示居委会、村委会的代码。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="公共知识" scheme="https://blog.wangzhiwei.online/categories/%E5%85%AC%E5%85%B1%E7%9F%A5%E8%AF%86/"/>
-    
-    
-    <category term="行政区划码" scheme="https://blog.wangzhiwei.online/tags/%E8%A1%8C%E6%94%BF%E5%8C%BA%E5%88%92%E7%A0%81/"/>
     
   </entry>
   
